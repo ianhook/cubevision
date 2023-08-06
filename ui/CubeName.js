@@ -1,8 +1,9 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 const CubeName = ({ cube }) => {
-    return cube.name;
+    return <>{cube?.name}</>;
 };
 
 CubeName.defaultProps = {
@@ -11,7 +12,9 @@ CubeName.defaultProps = {
 
 CubeName.propTypes = {
     cubeId: PropTypes.number.isRequired,
-    cube: PropTypes.shape({}),
+    cube: PropTypes.shape({
+        name: PropTypes.string,
+    }),
 };
 
 const mapStateToProps = (state, props) => ({
