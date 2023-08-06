@@ -1,13 +1,48 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import Radium from 'radium';
 
 import { cardType } from './propTypes';
 import ManaCost from './ManaCost';
 import Sets from './Sets';
 import OwnedSet from './OwnedSet';
 import Replacements from './Replacements';
+import CubeName from './CubeName';
 import { styles } from './consts';
+
+const getStyle = (card) => {
+    let backgroundColor = 'rgb(135, 110, 90)';
+    let color = 'white';
+    if (!card.color && card.color !== '') {
+        console.log(card);
+    }
+    if (card.color.length > 1) {
+        backgroundColor = 'rgb(223, 204, 151)';
+        color = 'black';
+    } else if (card.color === 'G') {
+        backgroundColor = 'rgb(200, 217, 209)';
+        color = 'black';
+    } else if (card.color === 'W') {
+        backgroundColor = 'rgb(248, 248, 246)';
+        color = 'black';
+    } else if (card.color === 'R') {
+        backgroundColor = 'rgb(245, 210, 190)';
+        color = 'black';
+    } else if (card.color === 'B') {
+        backgroundColor = 'rgb(194, 187, 187)';
+        color = 'black';
+    } else if (card.color === 'U') {
+        backgroundColor = 'rgb(182, 216, 233)';
+        color = 'black';
+    } else if (card.types === 'Land') {
+        backgroundColor = 'rgb(196, 177, 112)';
+        color = 'black';
+    }
+    return {
+        height: 31,
+        backgroundColor,
+        color,
+    };
+};
 
 const CardRow = ({ card, isHeader, canEdit }) => {
     if (isHeader) {
@@ -39,30 +74,7 @@ const CardRow = ({ card, isHeader, canEdit }) => {
             </tr>
         );
     }
-    let backgroundColor = 'rgb(135, 110, 90)';
-    let color = 'white';
-    if (card.color.length > 1) {
-        backgroundColor = 'rgb(223, 204, 151)';
-        color = 'black';
-    } else if (card.color === 'G') {
-        backgroundColor = 'rgb(200, 217, 209)';
-        color = 'black';
-    } else if (card.color === 'W') {
-        backgroundColor = 'rgb(248, 248, 246)';
-        color = 'black';
-    } else if (card.color === 'R') {
-        backgroundColor = 'rgb(245, 210, 190)';
-        color = 'black';
-    } else if (card.color === 'B') {
-        backgroundColor = 'rgb(194, 187, 187)';
-        color = 'black';
-    } else if (card.color === 'U') {
-        backgroundColor = 'rgb(182, 216, 233)';
-        color = 'black';
-    } else if (card.types === 'Land') {
-        backgroundColor = 'rgb(196, 177, 112)';
-        color = 'black';
-    }
+    const rowStyle = useMemo(() => getStyle(card), [card]);
     let reserved = '';
     if (card.reserved) {
         reserved = (
@@ -76,25 +88,26 @@ const CardRow = ({ card, isHeader, canEdit }) => {
             </span>
         );
     }
-    let multiverseId = card.owned_multiverseid || card.multiverse_id;
-    const printings = JSON.parse(card.printings);
-    if (!multiverseId && printings) {
-        printings.forEach((printing) => {
-            if (printing.multiverseid && printing.multiverseid > multiverseId) {
-                multiverseId = printing.multiverseid;
-            }
-        });
-    }
+    const { printings } = card;
+
+    const multiverseId = useMemo(() => {
+        let mId = card.owned_multiverseid || card.multiverse_id;
+        if (!mId && printings) {
+            printings.forEach((printing) => {
+                if (printing.multiverseid && printing.multiverseid > mId) {
+                    mId = printing.multiverseid;
+                }
+            });
+        }
+        return mId;
+    }, [card]);
     return (
         <tr
-            style={{
-                height: 31,
-                backgroundColor,
-                color,
-            }}
+            style={rowStyle}
         >
             <td style={{ fontWeight: 'bold' }}>
-                { ` ${card.name} ${reserved}` }
+                { card.name }
+                { reserved }
             </td>
             <td style={styles.hideOnSmall}>
                 <a
@@ -112,7 +125,7 @@ const CardRow = ({ card, isHeader, canEdit }) => {
                 </a>
             </td>
             <td style={styles.hideOnSmall}>
-                <ManaCost manaCost={card.mana_cost} />
+                <ManaCost manaCost={card.manaCost} />
             </td>
             <td>{card.types ? card.types.replace(',', ' ') : 'Unknown'}</td>
             <td>
@@ -123,7 +136,7 @@ const CardRow = ({ card, isHeader, canEdit }) => {
                 />
             </td>
             <td>
-                {card.lastCube}
+                <CubeName cubeId={card.lastCube} />
             </td>
             {canEdit && (
                 <th style={styles.hideOnSmall}>
@@ -146,4 +159,4 @@ CardRow.propTypes = {
     canEdit: PropTypes.bool,
 };
 
-export default Radium(CardRow);
+export default CardRow;

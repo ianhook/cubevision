@@ -59,12 +59,13 @@ class CardTable extends React.PureComponent {
 CardTable.defaultProps = {
     cards: [],
     sortedCards: [],
+    cubeId: OUR_CUBE,
 };
 
 CardTable.propTypes = {
     cards: PropTypes.arrayOf(cardType),
     sortedCards: PropTypes.arrayOf(cardType),
-    cubeId: PropTypes.number.isRequired,
+    cubeId: PropTypes.number,
 };
 
 const mapStateToProps = (state, props) => {

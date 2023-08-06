@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { replaceCard } from './actions';
-import { OUR_BINDER } from './consts';
-import { addLastCube, sort } from './helper';
+import { OUR_BINDER, LAST_CUBE } from './consts';
+import { sort } from './helper';
 import { cardType } from './propTypes';
 
 class Replacements extends React.PureComponent {
@@ -62,9 +62,6 @@ Replacements.propTypes = {
 };
 
 const validReplacement = (oldCard, card) => {
-    if (card.lastCube < oldCard.lastCube) {
-        return false;
-    }
     if ((card.color.length === 0 || card.color === 'C')
         && (oldCard.color.length === 0 || oldCard.color === 'C')
         && (oldCard.types === card.types || (oldCard.types !== 'Land' && card.types !== 'Land'))) {
@@ -82,15 +79,19 @@ const validReplacement = (oldCard, card) => {
 
 const mapStateToProps = (state, props) => {
     let cards = [];
-    const oldCard = addLastCube(state.getCards[props.cardId], state);
-    const suggestReplacements = state.sorter.replacements;
-    const sorter = suggestReplacements ? sort('lastCube', true) : sort();
-    if (Object.hasOwnProperty.call(state.getCubeCards, OUR_BINDER)) {
-        cards = state.getCubeCards[OUR_BINDER]
-            .map((cardId) => addLastCube(state.getCards[cardId], state))
-            .filter((card) => card.lastCube > 0
-                && (!suggestReplacements || validReplacement(oldCard, card)))
-            .sort(sorter);
+    const oldCard = state.getCards[props.cardId];
+    const oldCardLastCube = state.cardCubes[props.cardId]?.lastCube;
+    if (oldCardLastCube < LAST_CUBE) {
+        const suggestReplacements = state.sorter.replacements;
+        const sorter = suggestReplacements ? sort('lastCube', true) : sort();
+        if (Object.hasOwnProperty.call(state.getCubeCards, OUR_BINDER)) {
+            cards = state.getCubeCards[OUR_BINDER]
+                .map((cardId) =>  ({ ...state.getCards[cardId], lastCube: state.cardCubes[cardId]?.lastCube || 0 }))
+                .filter((card) => card.lastCube > 0
+                    && (!suggestReplacements || (oldCardLastCube > card.lastCube
+                        && validReplacement(oldCard, card))))
+                .sort(sorter);
+        }
     }
     return ({
         oldCard,

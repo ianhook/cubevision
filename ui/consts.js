@@ -11,7 +11,7 @@ module.exports = {
     },
     styles: {
         hideOnSmall: {
-            '@media (max-width: 500px)': {
+            '@media (maxWidth: 500px)': {
                 display: 'none',
             },
         },

@@ -1,19 +1,34 @@
 import { combineReducers } from 'redux';
 import { OUR_CUBE, OUR_BINDER } from './consts';
 
-const getCubes = (cubes = {}, action) => {
+const parseManaCosts = (manaCost) => {
+    if (manaCost === '' || manaCost === null) {
+        return null;
+    }
+    const re = /{([0-9/WRGBUCXP]+)}/;
+    return manaCost.split(re).filter((x) => x !== '').map((y) => y.replaceAll('/', ''));
+};
+
+const cubes = (currentCubes = {}, action) => {
     switch (action.type) {
     case 'RECEIVE_CUBES':
         return action.cubes.reduce((init, cube) => ({ ...init, [cube.cube_id]: cube }));
     default:
-        return cubes;
+        return currentCubes;
     }
 };
 
 const getCards = (cards = {}, action) => {
     switch (action.type) {
     case 'RECEIVE_CARDS':
-        return action.cards.reduce((init, card) => ({ ...init, [card.card_id]: card }));
+        return action.cards.reduce((init, card) => ({
+            ...init,
+            [card.card_id]: {
+                ...card,
+                printings: JSON.parse(card.printings),
+                manaCost: parseManaCosts(card.mana_cost),
+            },
+        }), {});
     default:
         return cards;
     }
@@ -42,6 +57,32 @@ const getCubeCards = (cards = {}, action) => {
     }
 };
 
+const cardCubes = (cards = {}, action) => {
+    switch (action.type) {
+    case 'RECEIVE_CUBE_CARDS':
+        // eslint-disable-next-line camelcase
+        return action.cubes.reduce((init, { card_id, cube_id }) => {
+            const ret = { ...init };
+            const cubeId = parseInt(cube_id, 10);
+            if (![OUR_CUBE, OUR_BINDER].includes(cube_id)) {
+                if (!Object.hasOwnProperty.call(ret, card_id)) {
+                    ret[card_id] = {
+                        lastCube: cube_id,
+                        cubeList: [],
+                    };
+                }
+                ret[card_id].cubeList.push(cubeId);
+                if (cubeId > ret[card_id].lastCube) {
+                    ret[card_id].lastCube = cubeId;
+                }
+            }
+            return ret;
+        }, {});
+    default:
+        return cards;
+    }
+};
+
 const sorter = (sortings = {
     sort: 'name',
 }, action) => {
@@ -54,9 +95,10 @@ const sorter = (sortings = {
 };
 
 const rootReducer = combineReducers({
-    getCubes,
+    cubes,
     getCards,
     getCubeCards,
+    cardCubes,
     sorter,
 });
 

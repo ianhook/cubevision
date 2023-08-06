@@ -136,20 +136,7 @@ const costSort = (cardA, cardB) => {
     return returnValue;
 };
 
-const addLastCube = (card, state) => {
-    const cubes = Object.keys(state.getCubeCards).filter((cubeId) => {
-        if (cubeId === '8' || cubeId === '9') {
-            return false;
-        }
-        const cube = state.getCubeCards[cubeId];
-        return cube.indexOf(card.card_id) >= 0;
-    });
-    const lastCube = Math.max(...cubes.map((c) => parseInt(c, 10)));
-    return { ...card, lastCube };
-};
-
 export {
-    addLastCube,
     colorSort,
     costSort,
     getMissing,

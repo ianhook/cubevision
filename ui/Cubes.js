@@ -28,7 +28,7 @@ Cubes.propTypes = {
     cubes: cubeType,
 };
 
-const mapStateToProps = state => ({ cubes: state.getCubes });
+const mapStateToProps = state => ({ cubes: state.cubes });
 
 const ConnectedCubes = connect(mapStateToProps)(Cubes);
 

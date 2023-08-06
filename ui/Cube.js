@@ -33,10 +33,10 @@ const mapStateToProps = (state, props) => {
     let cards = [];
     if (Object.hasOwnProperty.call(state.getCubeCards, cubeId)) {
         cards = state.getCubeCards[cubeId]
-            .map(cardId => state.getCards[cardId]);
+            .map((cardId) => state.getCards[cardId]);
     }
     return ({
-        cube: state.getCubes[cubeId],
+        cube: state.cubes[cubeId],
         cards,
     });
 };

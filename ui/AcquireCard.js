@@ -25,7 +25,7 @@ class Acquire extends React.Component {
         return (
             <div>
                 <select ref={(cardList) => { this.cards = cardList; }}>
-                    {cards.map(card => (
+                    {cards.map((card) => (
                         <option value={card.card_id} key={card.card_id}>{card.name}</option>
                     ))}
                 </select>
@@ -42,11 +42,12 @@ Acquire.propTypes = {
     })).isRequired,
 };
 
-const mapStateToProps = state => ({
-    cards: getMissing(state).map(card => state.getCards[card]).sort((a, b) => {
+const mapStateToProps = (state) => ({
+    cards: getMissing(state).map((card) => state.getCards[card]).filter((a) => a).sort((a, b) => {
         if (a.name < b.name) {
             return -1;
-        } else if (a.name > b.name) {
+        }
+        if (a.name > b.name) {
             return 1;
         }
         return 0;

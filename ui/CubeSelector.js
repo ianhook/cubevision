@@ -22,7 +22,7 @@ CubeSelector.propTypes = {
     onChange: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({ cubes: state.getCubes });
+const mapStateToProps = state => ({ cubes: state.cubes });
 
 const ConnectedCubeSelector = connect(mapStateToProps)(CubeSelector);
 
