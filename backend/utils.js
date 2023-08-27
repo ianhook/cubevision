@@ -90,27 +90,29 @@ function getData(row) {
             data.forEach((curr, i) => {
                 console.log(curr);
                 const colors = outData.colors.split();
-                curr.colors.split().forEach((c) => {
-                    if (colors.indexOf(c) === -1) {
-                        colors.push(c);
+                if (curr.colors) {
+                    curr.colors.split().forEach((c) => {
+                        if (colors.indexOf(c) === -1) {
+                            colors.push(c);
+                        }
+                    });
+                    if (i > 0) {
+                        outData.card.manaCost = `${outData.card.manaCost} // ${curr.card.manaCost}`;
                     }
-                });
-                if (i > 0) {
-                    outData.card.manaCost = `${outData.card.manaCost} // ${curr.card.manaCost}`;
+                    outData.colors = colors.sort((a, b) => {
+                        if (a === 'W') { return -1; }
+                        if (b === 'W') { return 1; }
+                        if (a === 'U') { return -1; }
+                        if (b === 'U') { return 1; }
+                        if (a === 'B') { return -1; }
+                        if (b === 'B') { return 1; }
+                        if (a === 'R') { return -1; }
+                        if (b === 'R') { return 1; }
+                        if (a === 'G') { return -1; }
+                        if (b === 'G') { return 1; }
+                        return 0;
+                    }).join('');
                 }
-                outData.colors = colors.sort((a, b) => {
-                    if (a === 'W') { return -1; }
-                    if (b === 'W') { return 1; }
-                    if (a === 'U') { return -1; }
-                    if (b === 'U') { return 1; }
-                    if (a === 'B') { return -1; }
-                    if (b === 'B') { return 1; }
-                    if (a === 'R') { return -1; }
-                    if (b === 'R') { return 1; }
-                    if (a === 'G') { return -1; }
-                    if (b === 'G') { return 1; }
-                    return 0;
-                }).join('');
             });
             return outData;
         });

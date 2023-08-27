@@ -113,10 +113,10 @@ const mapStateToProps = (state, props) => {
         });
     } else if (state.sorter.sort === 'age') {
         sortedCards = sortedCards.sort((cardA, cardB) => {
-            const a = JSON.parse(cardA.printings)
+            const a = cardA.printings
                 .filter((set) => isNotOnlineOnly(set) && set.multiverseid)
                 .reduce((init, set) => (init > set.multiverseid ? init : set.multiverseid), 0);
-            const b = JSON.parse(cardB.printings)
+            const b = cardB.printings
                 .filter((set) => isNotOnlineOnly(set) && set.multiverseid)
                 .reduce((init, set) => (init > set.multiverseid ? init : set.multiverseid), 0);
             if (a > b) {

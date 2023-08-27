@@ -12,8 +12,8 @@ import { styles } from './consts';
 const getStyle = (card) => {
     let backgroundColor = 'rgb(135, 110, 90)';
     let color = 'white';
-    if (!card.color && card.color !== '') {
-        console.log(card);
+    if (!card.color || card.color === '') {
+        return {};
     }
     if (card.color.length > 1) {
         backgroundColor = 'rgb(223, 204, 151)';
