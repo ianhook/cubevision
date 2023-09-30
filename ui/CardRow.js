@@ -12,10 +12,9 @@ import { styles } from './consts';
 const getStyle = (card) => {
     let backgroundColor = 'rgb(135, 110, 90)';
     let color = 'white';
-    if (!card.color || card.color === '') {
-        return {};
-    }
-    if (card.color.length > 1) {
+    if (!card.color || card.manaCost === null) {
+        // return {};
+    } else if (card.color.length > 1) {
         backgroundColor = 'rgb(223, 204, 151)';
         color = 'black';
     } else if (card.color === 'G') {
