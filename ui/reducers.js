@@ -1,5 +1,12 @@
 import { combineReducers } from 'redux';
-import { OUR_CUBE, OUR_BINDER } from './consts';
+import { MISSING_CUBE, OUR_CUBE, OUR_BINDER, REPLACEMENTS_CUBE } from './consts';
+
+const merge = (a, b, predicate = (a, b) => a === b) => {
+    const c = [...a]; // copy to avoid side effects
+    // add all items from B to copy C if they're not already present
+    b.forEach((bItem) => (c.some((cItem) => predicate(bItem, cItem)) ? null : c.push(bItem)))
+    return c;
+};
 
 const parseManaCosts = (manaCost) => {
     if (manaCost === '' || manaCost === null) {
@@ -36,17 +43,22 @@ const getCards = (cards = {}, action) => {
 
 const getCubeCards = (cards = {}, action) => {
     let outCards;
+    let ownedCards;
     switch (action.type) {
     case 'RECEIVE_CUBE_CARDS':
         // eslint-disable-next-line camelcase
-        return action.cubes.reduce((init, { card_id, cube_id }) => {
+        outCards = action.cubes.reduce((init, { card_id, cube_id }) => {
             const ret = { ...init };
             if (!Object.hasOwnProperty.call(ret, cube_id)) {
                 ret[cube_id] = [];
             }
-            ret[cube_id].push(card_id);
+            ret[cube_id].push(parseInt(card_id, 10));
             return ret;
         }, {});
+        ownedCards = merge(outCards[OUR_BINDER], outCards[OUR_CUBE]);
+        outCards[MISSING_CUBE] = Object.values(outCards).reduce((init, cardIds) => merge(init, cardIds.filter((id) => !ownedCards.includes(id))), []);
+        outCards[REPLACEMENTS_CUBE] = outCards[OUR_BINDER];
+        return outCards;
     case 'REPLACE_CARD':
         outCards = { ...cards };
         outCards[OUR_CUBE][cards[OUR_CUBE].indexOf(action.oldCardId)] = action.newCardId;

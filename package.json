@@ -8,10 +8,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "start-dev": "NODE_ENV=dev DATABASE_URL=$(heroku config:get DATABASE_URL -a cubevision) node index.js",
+    "start-dev": "NODE_ENV=dev DATABASE_URL=postgresql://ianhook:postgres@raspberrypi.local:5432 node index.js",
     "start-local": "NODE_ENV=dev node index.js",
-    "updater": "NODE_ENV=dev DATABASE_URL=$(heroku config:get DATABASE_URL -a cubevision) node updater.js",
-    "cube-list": "NODE_ENV=dev node cube_list.js",
+    "updater": "DATABASE_URL=postgresql://ianhook:postgres@raspberrypi.local:5432 node updater.js",
+    "cube-list": "DATABASE_URL=postgresql://ianhook:postgres@raspberrypi.local:5432 NODE_ENV=dev node cube_list.js",
     "heroku-postbuild": "webpack --config ./webpack.config.js --progress",
     "lint": "eslint ui backend",
     "watch": "webpack  --config ./webpack.config.js --progress -w"

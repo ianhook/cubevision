@@ -23,8 +23,8 @@ Missing.propTypes = {
     })),
 };
 
-const mapStateToProps = state => ({
-    cards: getMissing(state).map(card => state.getCards[card]),
+const mapStateToProps = (state) => ({
+    cards: getMissing(state).map((card) => state.getCards[card]),
 });
 
 const ConnectedMissing = connect(mapStateToProps)(Missing);

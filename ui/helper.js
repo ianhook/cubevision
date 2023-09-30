@@ -1,4 +1,4 @@
-import { OUR_CUBE, OUR_BINDER } from './consts';
+import { MISSING_CUBE } from './consts';
 
 const standardSets = [
     'ZNR',
@@ -17,15 +17,9 @@ const isInStandard = (card) => JSON.parse(card.printings)
 const isNotOnlineOnly = (set) => !(/ME[D1-4]|VMA|TPR|PZ1|PMODO/i.test(set.set));
 
 const getMissing = (state) => {
-    let ownedCards = [];
     let missingCards = [];
-    if (Object.hasOwnProperty.call(state.getCubeCards, OUR_CUBE)
-        && Object.hasOwnProperty.call(state.getCubeCards, OUR_BINDER)
-    ) {
-        ownedCards = state.getCubeCards[OUR_BINDER]
-            .concat(state.getCubeCards[OUR_CUBE]);
-        missingCards = Object.keys(state.getCards)
-            .filter((card) => !ownedCards.includes(parseInt(card, 10)));
+    if (Object.hasOwnProperty.call(state.getCubeCards, MISSING_CUBE)) {
+        missingCards = state.getCubeCards[MISSING_CUBE];
     }
     return missingCards;
 };

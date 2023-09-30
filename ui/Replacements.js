@@ -88,7 +88,7 @@ const mapStateToProps = (state, props) => {
             cards = state.getCubeCards[OUR_BINDER]
                 .map((cardId) =>  ({ ...state.getCards[cardId], lastCube: state.cardCubes[cardId]?.lastCube || 0 }))
                 .filter((card) => card.lastCube > 0
-                    && (!suggestReplacements || (oldCardLastCube > card.lastCube
+                    && (!suggestReplacements || (oldCardLastCube < card.lastCube
                         && validReplacement(oldCard, card))))
                 .sort(sorter);
         }
