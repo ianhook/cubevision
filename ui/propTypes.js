@@ -12,7 +12,7 @@ const cubeType = PropTypes.shape({
 const setType = PropTypes.shape({
     set: PropTypes.string,
     rarity: PropTypes.string,
-    multiverseid: PropTypes.oneOf(PropTypes.number, PropTypes.string),
+    multiverseid: PropTypes.number,
 });
 
 export {

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
 import CardTable from './CardTable';
 import { cubeType, cardType } from './propTypes';
@@ -18,18 +19,12 @@ Cube.defaultProps = {
 };
 
 Cube.propTypes = {
-    // eslint-disable-next-line react/no-unused-prop-types
-    match: PropTypes.shape({
-        params: PropTypes.shape({
-            id: PropTypes.string.isRequired,
-        }).isRequired,
-    }).isRequired,
     cube: cubeType,
     cards: PropTypes.arrayOf(cardType),
 };
 
 const mapStateToProps = (state, props) => {
-    const cubeId = props.match.params.id;
+    const { cubeId } = useParams();
     let cards = [];
     if (Object.hasOwnProperty.call(state.getCubeCards, cubeId)) {
         cards = state.getCubeCards[cubeId]
