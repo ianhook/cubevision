@@ -1,6 +1,7 @@
 const pg = require('pg');
 const fs = require('fs');
-const mtg = require('mtgsdk');
+const Scry = require("scryfall-sdk");
+// const mtg = require('mtgsdk');
 const path = require('path');
 
 const {

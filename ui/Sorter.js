@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Radium from 'radium';
 
 const Sorter = ({ onChange, isCurrentCube }) => (
     <div>
@@ -186,6 +185,6 @@ const mapDispatchToProps = (dispatch) => ({
     }),
 });
 
-const ConnectedSorter = connect(mapStateToProps, mapDispatchToProps)(Radium(Sorter));
+const ConnectedSorter = connect(mapStateToProps, mapDispatchToProps)(Sorter);
 
 export default ConnectedSorter;
