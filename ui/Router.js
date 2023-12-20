@@ -1,7 +1,8 @@
 import React from 'react';
 import {
-    BrowserRouter as Router,
+    BrowserRouter,
     Route,
+    Routes,
     Link,
 } from 'react-router-dom';
 
@@ -13,7 +14,7 @@ import AcquireCard from './AcquireCard';
 import { OUR_CUBE, OUR_BINDER, styles } from './consts';
 
 const CubeRouter = () => (
-    <Router>
+    <BrowserRouter>
         <div>
             <ul style={{
                 display: 'flex',
@@ -32,13 +33,15 @@ const CubeRouter = () => (
 
             <hr />
 
-            <Route path="/cubes" component={Cubes} />
-            <Route path="/cube/:id" component={Cube} />
-            <Route path="/missing" component={Missing} />
-            <Route path="/update" component={Updater} />
-            <Route path="/acquire" component={AcquireCard} />
+            <Routes>
+                <Route path="/cubes" element={<Cubes />} />
+                <Route path="/cube/:cubeId" element={<Cube />} />
+                <Route path="/missing" element={<Missing />} />
+                <Route path="/update" element={<Updater />} />
+                <Route path="/acquire" element={<AcquireCard />} />
+            </Routes>
         </div>
-    </Router>
+    </BrowserRouter>
 );
 
 export default CubeRouter;
