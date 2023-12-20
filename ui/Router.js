@@ -4,7 +4,6 @@ import {
     Route,
     Link,
 } from 'react-router-dom';
-import Radium from 'radium';
 
 import Cubes from './Cubes';
 import Cube from './Cube';
@@ -42,4 +41,4 @@ const CubeRouter = () => (
     </Router>
 );
 
-export default Radium(CubeRouter);
+export default CubeRouter;
