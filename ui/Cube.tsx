@@ -1,12 +1,31 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import CardTable from './CardTable';
-import { cubeType, cardType } from './propTypes';
 
-const Cube = ({ cube, cards, cubeId }) => (
+type CubeType = {
+    name: string;
+}
+
+type CardType = {
+    card_id: number;
+    name: string;
+}
+
+type CubeParams = {
+    cube: CubeType;
+    cards: CardType[];
+    cubeId: number;
+}
+
+type ReduxState = {
+    getCubeCards: number[][];
+    getCards: CardType[];
+    cubes: CubeType[];
+}
+
+const Cube = ({ cube, cards, cubeId }: CubeParams) => (
     <div>
         <h2>{cube.name}</h2>
         <CardTable cards={cards} cubeId={cubeId} />
@@ -18,17 +37,11 @@ Cube.defaultProps = {
     cards: [],
 };
 
-Cube.propTypes = {
-    cubeId: PropTypes.number,
-    cube: cubeType,
-    cards: PropTypes.arrayOf(cardType),
-};
-
-const mapStateToProps = (state, { cubeId }) => {
-    let cards = [];
+const mapStateToProps = (state: ReduxState, { cubeId }: CubeParams) => {
+    let cards: CardType[] = [];
     if (Object.hasOwnProperty.call(state.getCubeCards, cubeId)) {
         cards = state.getCubeCards[cubeId]
-            .map((cardId) => state.getCards[cardId]);
+            .map((cardId: number) => state.getCards[cardId]);
     }
     return ({
         cube: state.cubes[cubeId],
