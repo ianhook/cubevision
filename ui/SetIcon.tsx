@@ -1,9 +1,18 @@
 import React from 'react';
 
-import { setType } from './propTypes';
 import { SET_CODES } from './consts';
 
-const SetIcon = ({ set }) => {
+type SetIconParams = {
+    set: SetType;
+}
+
+type SetType = {
+    set: string;
+    rarity: string;
+    multiverseid: number;
+}
+
+const SetIcon = ({ set }: SetIconParams) => {
     if (!Object.hasOwnProperty.call(set, 'set')) {
         return null;
     }
@@ -28,10 +37,6 @@ const SetIcon = ({ set }) => {
             className={`ss ss-grad ss-2x ss-fw ss-${setCode} ss-${rarity}`}
         />
     );
-};
-
-SetIcon.propTypes = {
-    set: setType.isRequired,
 };
 
 export default SetIcon;

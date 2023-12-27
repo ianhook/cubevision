@@ -9,7 +9,7 @@ const Cubes = ({ cubes }) => (
     <div>
         <h2>Cubes</h2>
         <ul>
-            {Object.keys(cubes).map(cubeId => (
+            {Object.keys(cubes).filter(cubeId => cubes[cubeId].name).map(cubeId => (
                 <li key={cubeId}>
                     <Link to={`/cube/${cubeId}`}>
                         {cubes[cubeId].name}
