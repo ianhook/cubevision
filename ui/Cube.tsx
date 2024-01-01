@@ -2,27 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
+import { CubeType, CardType, ReduxState } from './types';
 import CardTable from './CardTable';
-
-type CubeType = {
-    name: string;
-}
-
-type CardType = {
-    card_id: number;
-    name: string;
-}
 
 type CubeParams = {
     cube: CubeType;
     cards: CardType[];
     cubeId: number;
-}
-
-type ReduxState = {
-    getCubeCards: number[][];
-    getCards: CardType[];
-    cubes: CubeType[];
 }
 
 const Cube = ({ cube, cards, cubeId }: CubeParams) => (

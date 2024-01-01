@@ -1,14 +1,16 @@
 import { combineReducers } from 'redux';
 import { MISSING_CUBE, OUR_CUBE, OUR_BINDER, REPLACEMENTS_CUBE } from './consts';
+import { CubeType, CardType, ReduxState } from './types';
 
-const merge = (a, b, predicate = (a, b) => a === b) => {
+
+const merge = (a: any, b: any, predicate = (a: any, b: any) => a === b) => {
     const c = [...a]; // copy to avoid side effects
     // add all items from B to copy C if they're not already present
-    b.forEach((bItem) => (c.some((cItem) => predicate(bItem, cItem)) ? null : c.push(bItem)))
+    b.forEach((bItem: any) => (c.some((cItem) => predicate(bItem, cItem)) ? null : c.push(bItem)))
     return c;
 };
 
-const parseManaCosts = (manaCost) => {
+const parseManaCosts = (manaCost: string): string[] =>  {
     if (manaCost === '' || manaCost === null) {
         return null;
     }
@@ -16,7 +18,12 @@ const parseManaCosts = (manaCost) => {
     return manaCost.split(re).filter((x) => x !== '').map((y) => y.replaceAll('/', ''));
 };
 
-const cubes = (currentCubes = {}, action) => {
+type CubeAction = {
+    type: string;
+    cubes: CubeType[];
+}
+
+const cubes = (currentCubes = {}, action: CubeAction) => {
     switch (action.type) {
     case 'RECEIVE_CUBES':
         return action.cubes.reduce((init, cube) => ({ ...init, [cube.cube_id]: cube }));
@@ -25,7 +32,12 @@ const cubes = (currentCubes = {}, action) => {
     }
 };
 
-const getCards = (cards = {}, action) => {
+type GetCardsAction = {
+    type: string;
+    cards: CardType[];
+}
+
+const getCards = (cards = {}, action: GetCardsAction) => {
     switch (action.type) {
     case 'RECEIVE_CARDS':
         return action.cards.reduce((init, card) => ({
@@ -41,14 +53,22 @@ const getCards = (cards = {}, action) => {
     }
 };
 
-const getCubeCards = (cards = {}, action) => {
-    let outCards;
-    let ownedCards;
+type CubeCardsAction = {
+    type: string;
+    cubes: {
+        card_id: string;
+        cube_id: number;
+    }[]
+};
+
+const getCubeCards = (cards = {}, action: CubeCardsAction) => {
+    let outCards: { [cube_id: number]: number[] };
+    let ownedCards: { [cube_id: number]: number[] };
     switch (action.type) {
     case 'RECEIVE_CUBE_CARDS':
         // eslint-disable-next-line camelcase
         outCards = action.cubes.reduce((init, { card_id, cube_id }) => {
-            const ret = { ...init };
+            const ret: { [cube_id: number]: number[] } = { ...init };
             if (!Object.hasOwnProperty.call(ret, cube_id)) {
                 ret[cube_id] = [];
             }
