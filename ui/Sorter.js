@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Radium from 'radium';
 
 const Sorter = ({ onChange, isCurrentCube }) => (
     <div>
@@ -9,7 +8,7 @@ const Sorter = ({ onChange, isCurrentCube }) => (
             display: 'flex', // Use flexbox to align elements horizontally
             alignItems: 'center', // Align items vertically centered
             justifyContent: 'space-between',
-            '@media (min-width: 500px)': {
+            '@media (minWidth: 500px)': {
                 justifyContent: 'start',
             },
         }}
@@ -84,7 +83,7 @@ const Sorter = ({ onChange, isCurrentCube }) => (
             marginTop: 8,
             display: 'flex',
             justifyContent: 'space-between',
-            '@media (min-width: 500px)': {
+            '@media (minWidth: 500px)': {
                 justifyContent: 'start',
             },
         }}
@@ -186,6 +185,6 @@ const mapDispatchToProps = (dispatch) => ({
     }),
 });
 
-const ConnectedSorter = connect(mapStateToProps, mapDispatchToProps)(Radium(Sorter));
+const ConnectedSorter = connect(mapStateToProps, mapDispatchToProps)(Sorter);
 
 export default ConnectedSorter;

@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Radium from 'radium';
 
 import SetIcon from './SetIcon';
 import { setType } from './propTypes';
@@ -84,4 +83,4 @@ Sets.defaultProps = {
     ownedId: null,
 };
 
-export default Radium(Sets);
+export default Sets;

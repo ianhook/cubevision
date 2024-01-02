@@ -1,14 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
 import CardTable from './CardTable';
 import { cubeType, cardType } from './propTypes';
 
-const Cube = ({ cube, cards }) => (
+const Cube = ({ cube, cards, cubeId }) => (
     <div>
         <h2>{cube.name}</h2>
-        <CardTable cards={cards} cubeId={cube.cube_id} />
+        <CardTable cards={cards} cubeId={cubeId} />
     </div>
 );
 
@@ -18,18 +19,12 @@ Cube.defaultProps = {
 };
 
 Cube.propTypes = {
-    // eslint-disable-next-line react/no-unused-prop-types
-    match: PropTypes.shape({
-        params: PropTypes.shape({
-            id: PropTypes.string.isRequired,
-        }).isRequired,
-    }).isRequired,
+    cubeId: PropTypes.number,
     cube: cubeType,
     cards: PropTypes.arrayOf(cardType),
 };
 
-const mapStateToProps = (state, props) => {
-    const cubeId = props.match.params.id;
+const mapStateToProps = (state, { cubeId }) => {
     let cards = [];
     if (Object.hasOwnProperty.call(state.getCubeCards, cubeId)) {
         cards = state.getCubeCards[cubeId]
@@ -43,4 +38,10 @@ const mapStateToProps = (state, props) => {
 
 const ConnectedCube = connect(mapStateToProps)(Cube);
 
-export default ConnectedCube;
+
+function SomeComponent() {
+    const { cubeId } = useParams();
+    return (<ConnectedCube cubeId={parseInt(cubeId, 10)} />);
+}
+
+export default SomeComponent;

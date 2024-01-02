@@ -1,9 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
-import thunkMiddleware from 'redux-thunk';
+import { thunk } from 'redux-thunk';
 import { createStore, applyMiddleware } from 'redux';
-import { StyleRoot } from 'radium';
 
 import { fetchCubes, fetchCards, fetchCubeCards } from './actions';
 import Router from './Router';
@@ -12,7 +11,7 @@ import todoApp from './reducers';
 const store = createStore(
     todoApp,
     applyMiddleware(
-        thunkMiddleware,
+        thunk,
     ),
 );
 
@@ -22,12 +21,10 @@ store.dispatch(fetchCubeCards());
 
 window.store = store;
 
-ReactDOM.render(
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(
     <Provider store={store}>
-        <StyleRoot>
-            <Router />
-        </StyleRoot>
-    </Provider>,
-    // eslint-disable-next-line no-undef
-    document.getElementById('root'),
+        <Router />
+    </Provider>
 );
