@@ -10,9 +10,15 @@ const config = {
     module: {
         rules: [
             { test: /\.jsx?$/, use: 'babel-loader' },
+            {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
         ],
     },
     resolve: {
+        extensions: ['.tsx', '.ts', '.js'],
         alias: {
             'react-dom$': 'react-dom/profiling',
             'scheduler/tracing': 'scheduler/tracing-profiling',

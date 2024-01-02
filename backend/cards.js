@@ -1,6 +1,6 @@
 const express = require('express');
 const pg = require('pg');
-const mtg = require('mtgsdk');
+// const Scry = require("scryfall-sdk");
 const { getData } = require('./utils');
 
 const {
