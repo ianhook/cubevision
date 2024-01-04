@@ -14,11 +14,11 @@ class CardDb {
     //     await this.withClient();
     // }
 
-    // release() {
-    //     if (this.client) {
-    //         this.client.release();
-    //     }
-    // }
+    release() {
+        if (this.client) {
+            this.client.release();
+        }
+    }
 
     // async withClient() {
     //     if (this.client === null) {
@@ -52,7 +52,28 @@ class CardDb {
         ];
         console.log('update', params);
         return this.withClient((client) => client.query(
-            'update cards set cmc = $1, mana_cost = $2, reserved = $3, color = $5, types = $6, printings = $7 where card_id = $4',
+            'update cards set cmc = $1, mana_cost = $2, reserved = $3, \
+            color = $5, types = $6, printings = $7 where card_id = $4',
+            params,
+        ));
+    }
+
+    updatePrintingsScryfall(card, cardId, colors, printings) {
+        const params = [
+            cardId,
+            card.reserved,
+            // card.scryfallId,
+            card.usd,
+            card.usdUpdated,
+            JSON.stringify(printings),
+            colors,
+            card.cmc,
+            card.manaCost,
+            card.types
+        ];
+        console.log('update', params);
+        return this.withClient((client) => client.query(
+            'update cards set reserved = $2, usd = $3, usd_updated = $4, printings = $5, color = $6, cmc = $7, mana_cost = $8, types = $9 where card_id = $1',
             params,
         ));
     }

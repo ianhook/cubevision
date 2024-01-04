@@ -36,87 +36,79 @@ function getColors(card) {
     }, '');
 }
 
-function getData(row) {
-    const splitName = row.name.split(' // ');
-    // console.log(splitName);
-    return Promise.all(splitName.map((cName) => new Promise((resolve, reject) => {
-        const data = {
-            printings: [],
-        };
-        const ev = mtg.card
-            .all({ name: cName });
-        ev.on('data', (card) => {
-            // console.log('data');
-            // console.log(cName);
-            // console.log(row.name);
-            console.log(card.name);
-            const { printings } = data;
-            let tmpName = card.name;
-            if (card.name.indexOf(' // ') > 0) {
-                // some cards are only listed as the front half
-                tmpName = card.name.substr(0, card.name.indexOf(' // '));
-            }
-            if (tmpName === cName) {
-                // console.log('data: ', cName);
-                // console.log(card.set);
-                const copy = {
-                    rarity: card.rarity[0],
-                    set: card.set,
-                };
-                if (Object.hasOwnProperty.call(card, 'multiverseid')) {
-                    copy.multiverseid = card.multiverseid;
-                }
-                printings.push(copy);
-            } else {
-                return;
-            }
+function colorString(colors) {
+    console.log(colors);
+    return colors.sort((a, b) => {
+        if (a === 'W') { return -1; }
+        if (b === 'W') { return 1; }
+        if (a === 'U') { return -1; }
+        if (b === 'U') { return 1; }
+        if (a === 'B') { return -1; }
+        if (b === 'B') { return 1; }
+        if (a === 'R') { return -1; }
+        if (b === 'R') { return 1; }
+        if (a === 'G') { return -1; }
+        if (b === 'G') { return 1; }
+        return 0;
+    }).join('');
+}
 
-            data.card = card;
-            data.colors = getColors(card);
-            data.printings = printings.filter((set) => isNotOnlineOnly(set) && set.multiverseid);
-            data.cardId = row.card_id;
+function parseTypes(typeLine) {
+    const types = typeLine.split('—')[0];
+    return [
+        'Land', 'Creature', 'Artifact', 'Enchantment',
+        'Planeswalker', 'Battle', 'Instant', 'Sorcery'
+    ].filter((type) => types.indexOf(type) >= 0).sort().join(',');
+}
+
+async function getData(row) {
+    // console.log(row);
+    // if (!row.owned_multiverseid) {
+    //     return {};
+    // }
+    const card = await Scry.Cards.byName(row.name);
+    const data = {
+        cmc: card.cmc, // no change
+        manaCost: card.mana_cost || card.card_faces[0].mana_cost, // no change
+        scryfallId: card.id, // replace multiverseid
+        types: parseTypes(card.type_line), // pull out types
+        usd: card.prices.usd, // usd vs usd_foil vs tix(?)
+        usdUpdated: (new Date()).toISOString(),
+        name: card.name,
+        reserved: card.reserved,
+    };
+    // const card = await Scry.Cards.byMultiverseId(row.owned_multiverseid);
+    const printings = (await card.getPrints())
+        .filter((p) => isNotOnlineOnly(p.set.toUpperCase()))
+        .map((p) => {
+            if (row.owned_multiverseid && p.multiverse_ids[0] === row.owned_multiverseid) {
+                data.usd = p.prices.usd;
+            }
+            return {
+                set: p.set.toUpperCase(),
+                multiverseid: p.multiverse_ids[0],
+                scryfallId: p.id,
+                rarity: p.rarity[0].toUpperCase(),
+                releasedAt: p.released_at,
+                image: p.image_uris?.normal,
+            };
+        })
+        .sort((a, b) => {
+            if (a.releasedAt > b.releasedAt) {
+                return 1;
+            } else if (a.releasedAt < b.releasedAt) {
+                return -1;
+            } else {
+                return 0;
+            }
         });
-        ev.on('end', () => {
-            console.log('end', data);
-            resolve(data);
-        });
-        ev.on('error', (err) => {
-            console.log('err', err);
-            reject(err);
-        });
-    })))
-        .then((data) => {
-            const outData = data[0];
-            console.log('getData data:', data);
-            data.forEach((curr, i) => {
-                console.log(curr);
-                const colors = outData.colors.split();
-                if (curr.colors) {
-                    curr.colors.split().forEach((c) => {
-                        if (colors.indexOf(c) === -1) {
-                            colors.push(c);
-                        }
-                    });
-                    if (i > 0) {
-                        outData.card.manaCost = `${outData.card.manaCost} // ${curr.card.manaCost}`;
-                    }
-                    outData.colors = colors.sort((a, b) => {
-                        if (a === 'W') { return -1; }
-                        if (b === 'W') { return 1; }
-                        if (a === 'U') { return -1; }
-                        if (b === 'U') { return 1; }
-                        if (a === 'B') { return -1; }
-                        if (b === 'B') { return 1; }
-                        if (a === 'R') { return -1; }
-                        if (b === 'R') { return 1; }
-                        if (a === 'G') { return -1; }
-                        if (b === 'G') { return 1; }
-                        return 0;
-                    }).join('');
-                }
-            });
-            return outData;
-        });
+    console.log(card)
+    return {
+        card: data,
+        cardId: row.card_id,
+        printings,
+        colors: colorString(card.colors || card.card_faces[0].colors),
+    };
 }
 
 const reserveList = [];

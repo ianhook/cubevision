@@ -7,33 +7,40 @@ const startParam = parseInt(args[0], 10);
 const endParam = parseInt(args[1], 10);
 const STEP = 1;
 
-function doUpdate(start, end) {
+async function doUpdate(resolve, start, end) {
     let current = start;
     let currentEnd = end;
-    const db = new CardDB(process.env.DATABASE_URL);
+    const db = new CardDB(process.env.DATABASE_URL || 'postgresql://ianhook:postgres@localhost:5432/ianhook');
     // await db.initialize();
-    while (current < end) {
+    while (current <= end) {
+        console.log(current, end)
         currentEnd = current + STEP - 1;
-        db.queryCardRange(current, currentEnd)
+        await db.queryCardRange(current, currentEnd)
             .then((result) => Promise.all(
                 result.rows.map((row) => getData(row, {})
                     .then((data) => {
+                        console.log(data);
+                        if (!data.card?.name) {
+                            return;
+                        }
                         console.log(data.card.name);
-                        return db.updatePrintings(
+                        return db.updatePrintingsScryfall(
                             data.card, data.cardId,
                             data.colors, data.printings,
                         );
                     })
                     .catch((dataErr) => {
                         console.log('update error', dataErr);
-                    }))
+                    })
+                )
             ))
             .then(() => console.log('success'))
             .catch((err) => console.log(`Error ${err}`));
         current = currentEnd + 1;
         console.log('~~~~~~~~~~ batch:', currentEnd);
     }
-    // db.release();
+    db.release();
+    resolve();
 }
 
 async function updateReserved() {
@@ -42,7 +49,11 @@ async function updateReserved() {
 }
 
 if (!Number.isNaN(startParam) && !Number.isNaN(endParam)) {
-    doUpdate(startParam, endParam);
+    return (new Promise((resolve) => doUpdate(resolve, startParam, endParam)))
+        .then(() => {
+            console.log('done');
+            process.exit(); // probably not closing everything correctly
+        });
 }
 
 // updateReserved();

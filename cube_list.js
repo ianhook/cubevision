@@ -9,7 +9,7 @@ const {
     findOrCreateCard,
 } = require('./backend/postgres');
 
-const NEWEST_CUBE = 29;
+const NEWEST_CUBE = 31;
 const CUBE_URL = 'https://www.mtgo.com/vintage-cube-cardlist';
 // const CUBE_URL = 'https://magic.wizards.com/en/articles/archive/vintage-cube-cardlist';
 // const CUBE_URL = 'https://magic.wizards.com/en/articles/archive/magic-online/vintage-cube-july-2021-update';
