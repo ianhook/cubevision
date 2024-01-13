@@ -7,13 +7,14 @@ import { styles } from './consts';
 import { isNotOnlineOnly } from './helper';
 import CardImage from './CardImage';
 
-const handleSave = (cardId, multiverseid) => () =>
+const handleSave = (cardId, multiverseid, scryfallId) => () =>
     fetch('/api/card/setversion', {
         method: 'POST',
         headers: new Headers({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({
             cardId,
             multiverseid,
+            scryfallId,
         }),
     });
 
@@ -40,7 +41,7 @@ class Sets extends React.PureComponent {
     }
 
     render() {
-        const { printings, ownedId, cardId } = this.props;
+        const { printings, scryfallId, cardId } = this.props;
         const { showImage } = this.state;
         const style = {
             display: 'inline-block',
@@ -48,24 +49,21 @@ class Sets extends React.PureComponent {
         return (
             <div style={{ position: 'relative' }}>
                 {printings && printings
-                    // filter out online sets
-                    .filter(set => isNotOnlineOnly(set) && set.multiverseid)
-                    .sort((a, b) => a.multiverseid > b.multiverseid)
                     .map((set, i, arr) => (
                         <div
-                            key={`${set.set}-${set.multiverseid}-${i}`} // eslint-disable-line react/no-array-index-key
+                            key={`${set.set}-${set.scryfallId}-${i}`} // eslint-disable-line react/no-array-index-key
                             role="button"
                             tabIndex={0}
-                            style={ownedId === set.multiverseid ||
-                                (ownedId === null && i === (arr.length - 1)) ? style : styles.hideOnSmall}
-                            onClick={handleSave(cardId, set.multiverseid)}
-                            onMouseEnter={() => this.showImage(set.multiverseid)}
-                            onMouseLeave={() => this.hideImage(set.multiverseid)}
+                            style={scryfallId === set.scryfallId ||
+                                (scryfallId === null && i === (arr.length - 1)) ? style : styles.hideOnSmall}
+                            onClick={handleSave(cardId, set.multiverseid, set.scryfallId)}
+                            onMouseEnter={() => this.showImage(set.scryfallId)}
+                            onMouseLeave={() => this.hideImage(set.scryfallId)}
                         >
                             <SetIcon
                                 set={set}
                             />
-                            {showImage === set.multiverseid && <CardImage multiverseId={set.multiverseid} />}
+                            {showImage === set.scryfallId && <CardImage image={set.image} />}
                         </div>
                     ))}
             </div>

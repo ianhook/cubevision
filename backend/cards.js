@@ -43,10 +43,10 @@ router.get('/', (request, response) => {
 
 // router.post('/setversion', (request, response) => {
 //     console.log('setversion');
-//     const { cardId, multiverseid } = request.body;
+//     const { cardId, multiverseid, scryfallId } = request.body;
 //     console.log(request.body);
 //     pool().connect((connErr, client, done) => {
-//         setVersion(cardId, multiverseid, client)
+//         setVersion(cardId, multiverseid, scryfallId, client)
 //             .then(() => {
 //                 response.send(true);
 //                 done();

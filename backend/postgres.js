@@ -59,9 +59,9 @@ const removeCardFromCube = (cubeId, cardId, client) => new Promise((resolve, rej
 
 const acquireCard = (cardId, client) => addCardToCube(constants.OUR_BINDER, cardId, client);
 
-const setVersion = (cardId, multiverseid, client) => new Promise((resolve, reject) => {
-    const query = 'update cards set owned_multiverseid = $2 where card_id = $1';
-    client.query(query, [cardId, multiverseid], (err) => {
+const setVersion = (cardId, multiverseid, scryfallId, client) => new Promise((resolve, reject) => {
+    const query = 'update cards set owned_multiverseid = $2, scryfall_id = $3 where card_id = $1';
+    client.query(query, [cardId, multiverseid, scryfallId], (err) => {
         console.log(err);
         if (err) {
             reject(err);

@@ -1,27 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import SetIcon from './SetIcon';
+import Sets from './Sets';
 import { setType } from './propTypes';
 
-const OwnedSet = ({ printings, ownedId }) => {
-    let owned = {};
+const OwnedSet = ({ printings, ownedId, cardId }) => {
+    let owned = [];
     if (ownedId === -1) {
         return <>Proxy</>;
     }
     printings
         .forEach((set) => {
-            if (parseInt(set.multiverseid, 10) === ownedId) {
-                owned = set;
+            if (set.scryfallId === ownedId) {
+                owned.push(set);
             }
         });
 
-    return <SetIcon set={owned} />;
+    return <Sets cardId={cardId} ownedId={ownedId} printings={owned} />;
 };
 
 OwnedSet.propTypes = {
     ownedId: PropTypes.number,
     printings: PropTypes.arrayOf(setType).isRequired,
+    cardId: PropTypes.number,
 };
 
 OwnedSet.defaultProps = {

@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const CardImage = ({ multiverseId }) => {
-    if (multiverseId === 0) {
+const CardImage = ({ image }) => {
+    if (image === '') {
         return null;
     }
     const style = {
@@ -22,9 +22,8 @@ const CardImage = ({ multiverseId }) => {
     };
     return (
         <img
-            alt={multiverseId}
             style={style}
-            src={`https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=${multiverseId}&type=card`}
+            src={image}
         />
     );
 };

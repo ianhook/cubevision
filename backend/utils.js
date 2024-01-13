@@ -11,7 +11,7 @@ const {
 
 pg.defaults.ssl = true;
 
-const isNotOnlineOnly = (set) => !(/ME[D1-4]|VMA|TPR|PZ1|PMODO/i.test(set.set));
+const isNotOnlineOnly = (set) => !(/ME[D1-4]|VMA|TPR|PZ1|PRM|PMODO/i.test(set.set));
 
 function getColors(card) {
     if (!Object.hasOwnProperty.call(card, 'colors')) {

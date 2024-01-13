@@ -114,10 +114,10 @@ const CardRow = ({ card, isHeader, canEdit }) => {
                     rel="noopener noreferrer"
                     href={`https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=${multiverseId}&type=card`}
                 >
-                    {card.owned_multiverseid ? (
+                    {card.scryfall_id ? (
                         <OwnedSet
                             printings={printings}
-                            ownedId={card.owned_multiverseid}
+                            ownedId={card.scryfall_id}
                             cardId={card.card_id}
                         />
                     ) : 'Image'}
