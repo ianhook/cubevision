@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-const CubeName = ({ cube }) => {
-    return <>{cube?.name}</>;
+const CubeName = ({ cube, cubeId }) => {
+    return <>{cube?.name} ({cubeId})</>;
 };
 
 CubeName.defaultProps = {

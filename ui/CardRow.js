@@ -70,6 +70,9 @@ const CardRow = ({ card, isHeader, canEdit }) => {
                         Remove
                     </th>
                 )}
+                <th>
+                    Price
+                </th>
             </tr>
         );
     }
@@ -142,6 +145,9 @@ const CardRow = ({ card, isHeader, canEdit }) => {
                     <Replacements cardId={card.card_id} />
                 </th>
             )}
+            <td>
+                {card.usd}
+            </td>
         </tr>
     );
 };

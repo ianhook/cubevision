@@ -11,7 +11,7 @@ const {
 
 pg.defaults.ssl = true;
 
-const isNotOnlineOnly = (set) => !(/ME[D1-4]|VMA|TPR|PZ1|PRM|PMODO/i.test(set.set));
+const isNotOnlineOnly = (set) => !(/ME[D1-4]|VMA|TPR|PZ1|PRM|PMODO/i.test(set));
 
 function getColors(card) {
     if (!Object.hasOwnProperty.call(card, 'colors')) {
@@ -72,7 +72,7 @@ async function getData(row) {
         manaCost: card.mana_cost || card.card_faces[0].mana_cost, // no change
         scryfallId: card.id, // replace multiverseid
         types: parseTypes(card.type_line), // pull out types
-        usd: card.prices.usd, // usd vs usd_foil vs tix(?)
+        usd: card.prices.usd || row.usd, // usd vs usd_foil vs tix(?)
         usdUpdated: (new Date()).toISOString(),
         name: card.name,
         reserved: card.reserved,
@@ -81,8 +81,19 @@ async function getData(row) {
     const printings = (await card.getPrints())
         .filter((p) => isNotOnlineOnly(p.set.toUpperCase()))
         .map((p) => {
-            if (row.owned_multiverseid && p.multiverse_ids[0] === row.owned_multiverseid) {
-                data.usd = p.prices.usd;
+            console.log(p)
+            if (row.scryfall_id) {
+                if (p.id === row.scryfall_id) {
+                    data.usd = parseFloat(p.prices.usd || p.prices.usd_foil || p.prices.usd_etched);
+                }
+            } else if (!(data.usd)) {
+                data.usd = parseFloat(p.prices.usd || p.prices.usd_foil || p.prices.usd_etched);
+            } else if (!!(p.prices.usd) && parseFloat(p.prices.usd) < data.usd) {
+                data.usd = parseFloat(p.prices.usd);
+            } else if (!!(p.prices.usd_foil) && parseFloat(p.prices.usd_foil) < data.usd) {
+                data.usd = parseFloat(p.prices.usd_foil);
+            } else if (!!(p.prices.usd_etched) && parseFloat(p.prices.usd_etched) < data.usd) {
+                data.usd = parseFloat(p.prices.usd_etched);
             }
             return {
                 set: p.set.toUpperCase(),
@@ -90,7 +101,7 @@ async function getData(row) {
                 scryfallId: p.id,
                 rarity: p.rarity[0].toUpperCase(),
                 releasedAt: p.released_at,
-                image: p.image_uris?.normal,
+                image: p.image_uris?.normal || p.card_faces[0].image_uris?.normal,
             };
         })
         .sort((a, b) => {
@@ -102,7 +113,7 @@ async function getData(row) {
                 return 0;
             }
         });
-    console.log(card)
+    // console.log(card);
     return {
         card: data,
         cardId: row.card_id,

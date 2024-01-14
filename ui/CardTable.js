@@ -37,6 +37,11 @@ class CardTable extends React.PureComponent {
                 <div style={{ margin: 4, fontWeight: 'bold' }}>
                     {`${sortedCards.length} of ${cards.length}`}
                 </div>
+                <div style={{ margin: 4, fontWeight: 'bold' }}>
+                    ${(sortedCards.filter((c) => c.usd)
+                        .reduce((val, c) => val + parseFloat(c.usd.replace('$','')), 0.0))
+                        .toLocaleString()}
+                </div>
                 <table>
                     <thead>
                         <CardRow isHeader canEdit={canEdit} />
@@ -101,6 +106,24 @@ const mapStateToProps = (state, props) => {
     }
     if (state.sorter.sort === 'name' || state.sorter.sort === 'types') {
         sortedCards = sortedCards.sort(sort(state.sorter.sort));
+    } else if (state.sorter.sort === 'price') {
+        sortedCards = sortedCards.sort((a, b) => {
+            if (a.usd === null) {
+                return -1;
+            }
+            if (b.usd === null) {
+                return  1;
+            }
+            const aUSD = parseFloat(a.usd.replace('$',''),10);
+            const bUSD = parseFloat(b.usd.replace('$',''),10);
+            if (aUSD > bUSD) {
+                return -1;
+            }
+            if (aUSD < bUSD) {
+                return 1;
+            }
+            return 0;
+        });
     } else if (state.sorter.sort === 'lastCube') {
         sortedCards = sortedCards.sort((a, b) => {
             if (a.lastCube > b.lastCube) {

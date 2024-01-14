@@ -159,6 +159,18 @@ const Sorter = ({ onChange, isCurrentCube }) => (
                     Last Cube
                 </label>
             </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', marginRight: '8px' }}>
+                <input
+                    id="price"
+                    type="radio"
+                    name="sort"
+                    onChange={(e) => onChange(e.target.name, e.target.id)}
+                />
+                <label htmlFor="price" style={{ marginLeft: '4px' }}>
+                    Price
+                </label>
+            </div>
         </div>
     </div>
 );

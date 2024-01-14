@@ -19,11 +19,11 @@ async function doUpdate(resolve, start, end) {
             .then((result) => Promise.all(
                 result.rows.map((row) => getData(row, {})
                     .then((data) => {
-                        console.log(data);
+                        // console.log(data);
                         if (!data.card?.name) {
                             return;
                         }
-                        console.log(data.card.name);
+                        // console.log(data.card.name);
                         return db.updatePrintingsScryfall(
                             data.card, data.cardId,
                             data.colors, data.printings,

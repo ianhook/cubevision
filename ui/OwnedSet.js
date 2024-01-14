@@ -6,7 +6,7 @@ import { setType } from './propTypes';
 
 const OwnedSet = ({ printings, ownedId, cardId }) => {
     let owned = [];
-    if (ownedId === -1) {
+    if (ownedId.trim() === '-1') {
         return <>Proxy</>;
     }
     printings
