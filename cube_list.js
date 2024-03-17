@@ -1,15 +1,15 @@
-const fetch = require('node-fetch');
-const parser = require('node-html-parser');
-const pg = require('pg');
+import fetch from 'node-fetch';
+import parser from 'node-html-parser';
+import pg from 'pg';
 
 pg.defaults.ssl = true;
 
-const {
+import {
     addCardToCube,
     findOrCreateCard,
-} = require('./backend/postgres');
+}  from './backend/postgres.js';
 
-const NEWEST_CUBE = 31;
+const NEWEST_CUBE = 32;
 const CUBE_URL = 'https://www.mtgo.com/vintage-cube-cardlist';
 // const CUBE_URL = 'https://magic.wizards.com/en/articles/archive/vintage-cube-cardlist';
 // const CUBE_URL = 'https://magic.wizards.com/en/articles/archive/magic-online/vintage-cube-july-2021-update';

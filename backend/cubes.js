@@ -1,14 +1,15 @@
-const express = require('express');
-const pg = require('pg');
+import express from 'express';
+import pg from 'pg';
 
-const {
+import {
     addCardToCube,
     findOrCreateCard,
-} = require('./postgres');
+} from './postgres.js';
 
 pg.defaults.ssl = true;
 
 const router = express.Router();
+export default router;
 
 function pool() {
     return new pg.Pool({
@@ -85,5 +86,3 @@ router.get('/:cubeId', (request, response) => {
         });
     });
 });
-
-module.exports = router;

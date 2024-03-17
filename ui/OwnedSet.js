@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Sets from './Sets';
-import { setType } from './propTypes';
+import Sets from './Sets.js';
+import { setType } from './propTypes.js';
 
 const OwnedSet = ({ printings, ownedId, cardId }) => {
     let owned = [];

@@ -1,19 +1,19 @@
-const pg = require('pg');
-const fs = require('fs');
-const Scry = require("scryfall-sdk");
+import pg from 'pg';
+import fs from 'fs';
+import Scry  from 'scryfall-sdk';
 // const mtg = require('mtgsdk');
-const path = require('path');
+import path from 'path';
 
-const {
+import {
     updatePrintings,
     reserveDB,
-} = require('./postgres');
+} from './postgres.js';
 
 pg.defaults.ssl = true;
 
-const isNotOnlineOnly = (set) => !(/ME[D1-4]|VMA|TPR|PZ1|PRM|PMODO|EA[1-9]|HA[1-9]|SIR|AJMP|AKR/i.test(set));
+const isNotOnlineOnly = (set) => !(/ME[D1-4]|VMA|TPR|PZ1|PRM|PMODO|EA[1-9]|HA[1-9]|SIR|AJMP|J21|KLR|AKR/i.test(set));
 
-function getColors(card) {
+export function getColors(card) {
     if (!Object.hasOwnProperty.call(card, 'colors')) {
         return 'C';
     }
@@ -36,7 +36,7 @@ function getColors(card) {
     }, '');
 }
 
-function colorString(colors) {
+export function colorString(colors) {
     console.log(colors);
     return colors.sort((a, b) => {
         if (a === 'W') { return -1; }
@@ -53,7 +53,7 @@ function colorString(colors) {
     }).join('');
 }
 
-function parseTypes(typeLine) {
+export function parseTypes(typeLine) {
     const types = typeLine.split('—')[0];
     return [
         'Land', 'Creature', 'Artifact', 'Enchantment',
@@ -61,7 +61,7 @@ function parseTypes(typeLine) {
     ].filter((type) => types.indexOf(type) >= 0).sort().join(',');
 }
 
-async function getData(row) {
+export async function getData(row) {
     // console.log(row);
     // if (!row.owned_multiverseid) {
     //     return {};
@@ -124,7 +124,7 @@ async function getData(row) {
 
 const reserveList = [];
 
-function isReserved(cardName) {
+export function isReserved(cardName) {
     if (reserveList.length === 0) {
         const list = fs.readFileSync(path.resolve('./reserve_list.txt'), { encoding: 'utf8', flag: 'r' });
         list.split('\n').forEach((card) => {
@@ -136,14 +136,14 @@ function isReserved(cardName) {
     return reserveList.indexOf(cardName) !== -1;
 }
 
-function updateReserved(client) {
+export function updateReserved(client) {
     return client.query('select * from cards;')
         .then((result) => Promise.all(
             result.rows.map((row) => reserveDB(client, row, isReserved(row.name))),
         ));
 }
 
-function queryPrintings(start, end, client) {
+export function queryPrintings(start, end, client) {
     return client.query(`select * from cards where card_id between ${start} and ${end};`)
         .then((result) => Promise.all(
             result.rows.map((row) => getData(row, {})
@@ -163,7 +163,7 @@ function queryPrintings(start, end, client) {
         .catch((err) => console.log(`Error ${err}`));
 }
 
-function moveToHashes(newHash, client) {
+export function moveToHashes(newHash, client) {
     const query = 'insert into cube_card_hash (cube_id, card_ids, hash_id, hash_divisor) values ($1, $2, $3, $4)';
     return client.query(`select cube_id, card_id % ${newHash} as hash, array_agg(card_id) as cards from cube_cards  group by cube_id, card_id % ${newHash};`)
         .then((result) => Promise.all(
@@ -175,7 +175,7 @@ function moveToHashes(newHash, client) {
         .catch((err) => console.log(`Error ${err}`));
 }
 
-function moveFromHashes(client) {
+export function moveFromHashes(client) {
     const query = 'insert into cube_cards (cube_id, card_id) values ($1, $2)';
     return client.query('select cube_id, card_ids from cube_card_hash;')
         .then((result) => Promise.all(
@@ -188,12 +188,3 @@ function moveFromHashes(client) {
         ))
         .catch((err) => console.log(`Error ${err}`));
 }
-
-module.exports = {
-    queryPrintings,
-    getData,
-    updateReserved,
-    isReserved,
-    moveToHashes,
-    moveFromHashes,
-};

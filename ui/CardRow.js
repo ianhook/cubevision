@@ -1,13 +1,12 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { cardType } from './propTypes';
-import ManaCost from './ManaCost';
-import Sets from './Sets';
-import OwnedSet from './OwnedSet';
-import Replacements from './Replacements';
-import CubeName from './CubeName';
-import { styles } from './consts';
+import { cardType } from './propTypes.js';
+import ManaCost from './ManaCost.js';
+import Sets from './Sets.js';
+import OwnedSet from './OwnedSet.js';
+import Replacements from './Replacements.js';
+import CubeName from './CubeName.js';
 
 const getStyle = (card) => {
     let backgroundColor = 'rgb(135, 110, 90)';
@@ -44,16 +43,30 @@ const getStyle = (card) => {
 };
 
 const CardRow = ({ card, isHeader, canEdit }) => {
+    const [matches, setMatches] = useState(
+        window.matchMedia("(max-width: 750px)").matches
+    );
+    
+    useEffect(() => {
+        window
+        .matchMedia("(max-width: 750px)")
+        .addEventListener('change', e => setMatches( e.matches ));
+    }, []);
+
+    const style = {
+        display: matches ? 'none' : 'table-cell',
+    };
+
     if (isHeader) {
         return (
             <tr>
                 <th>
                     Name
                 </th>
-                <th style={styles.hideOnSmall}>
+                <th style={style}>
                     Image
                 </th>
-                <th style={styles.hideOnSmall}>
+                <th style={style}>
                     Mana Cost
                 </th>
                 <th>
@@ -66,11 +79,11 @@ const CardRow = ({ card, isHeader, canEdit }) => {
                     Last Cube
                 </th>
                 {canEdit && (
-                    <th style={styles.hideOnSmall}>
+                    <th style={style}>
                         Remove
                     </th>
                 )}
-                <th>
+                <th style={style}>
                     Price
                 </th>
             </tr>
@@ -111,7 +124,7 @@ const CardRow = ({ card, isHeader, canEdit }) => {
                 { card.name }
                 { reserved }
             </td>
-            <td style={styles.hideOnSmall}>
+            <td style={style}>
                 <a
                     target="__blank"
                     rel="noopener noreferrer"
@@ -126,14 +139,14 @@ const CardRow = ({ card, isHeader, canEdit }) => {
                     ) : 'Image'}
                 </a>
             </td>
-            <td style={styles.hideOnSmall}>
+            <td style={style}>
                 <ManaCost manaCost={card.manaCost} />
             </td>
             <td>{card.types ? card.types.replace(',', ' ') : 'Unknown'}</td>
             <td>
                 <Sets
                     printings={printings}
-                    ownedId={card.owned_multiverseid}
+                    scryfallId={card.scryfall_id}
                     cardId={card.card_id}
                 />
             </td>
@@ -141,11 +154,11 @@ const CardRow = ({ card, isHeader, canEdit }) => {
                 <CubeName cubeId={card.lastCube} />
             </td>
             {canEdit && (
-                <th style={styles.hideOnSmall}>
+                <td style={style}>
                     <Replacements cardId={card.card_id} />
-                </th>
+                </td>
             )}
-            <td>
+            <td style={style}>
                 {card.usd}
             </td>
         </tr>

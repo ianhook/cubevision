@@ -1,11 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import SetIcon from './SetIcon';
-import { setType } from './propTypes';
-import { styles } from './consts';
-import { isNotOnlineOnly } from './helper';
-import CardImage from './CardImage';
+import SetIcon from './SetIcon.js';
+import { setType } from './propTypes.js';
+import CardImage from './CardImage.js';
 
 const handleSave = (cardId, multiverseid, scryfallId) => () =>
     fetch('/api/card/setversion', {
@@ -18,62 +16,54 @@ const handleSave = (cardId, multiverseid, scryfallId) => () =>
         }),
     });
 
+const Sets = ({ printings, scryfallId, cardId }) => {
+    const [matches, setMatches] = useState(
+        window.matchMedia("(max-width: 750px)").matches
+    );
+    
+    useEffect(() => {
+        window
+        .matchMedia("(max-width: 750px)")
+        .addEventListener('change', e => setMatches( e.matches ));
+    }, []);
 
-class Sets extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-            showImage: false,
-        };
-    }
+    const style = {
+        display: matches ? 'none' : 'inline-block',
+    };
+    
+    const [showImage, setShowImage] = useState(false);
 
-    showImage(showImage) {
-        this.setState({ showImage });
-    }
-
-    hideImage(image) {
-        this.setState((prevState) => {
-            if (prevState.showImage === image) {
-                return { showImage: false };
-            }
-            return {};
-        });
-    }
-
-    render() {
-        const { printings, scryfallId, cardId } = this.props;
-        const { showImage } = this.state;
-        const style = {
-            display: 'inline-block',
-        };
-        return (
-            <div style={{ position: 'relative' }}>
-                {printings && printings
-                    .map((set, i, arr) => (
-                        <div
-                            key={`${set.set}-${set.scryfallId}-${i}`} // eslint-disable-line react/no-array-index-key
-                            role="button"
-                            tabIndex={0}
-                            style={scryfallId === set.scryfallId ||
-                                (scryfallId === null && i === (arr.length - 1)) ? style : styles.hideOnSmall}
-                            onClick={handleSave(cardId, set.multiverseid, set.scryfallId)}
-                            onMouseEnter={() => this.showImage(set.scryfallId)}
-                            onMouseLeave={() => this.hideImage(set.scryfallId)}
-                        >
-                            <SetIcon
-                                set={set}
-                            />
+    return (
+        <div style={{ position: 'relative' }}>
+            {printings && printings
+                .map((set, i, arr) => (
+                    <div
+                        key={`${set.set}-${set.scryfallId}-${i}`} // eslint-disable-line react/no-array-index-key
+                        role="button"
+                        tabIndex={0}
+                        style={{
+                            display: (!matches || scryfallId === set.scryfallId ||
+                            (scryfallId === null && i === (arr.length - 1))) ? 'inline-block' : 'none'
+                        }}
+                        onClick={handleSave(cardId, set.multiverseid, set.scryfallId)}
+                        onMouseEnter={() => setShowImage(set.scryfallId)}
+                        onMouseLeave={() => showImage === set.scryfallId ? setShowImage(false) : null}
+                    >
+                        <SetIcon
+                            set={set}
+                        />
+                        <div style={{ position: 'absolute' }}>
                             {showImage === set.scryfallId && <CardImage image={set.image} />}
                         </div>
-                    ))}
-            </div>
-        );
-    };
+                    </div>
+                ))}
+        </div>
+    );
 }
 
 Sets.propTypes = {
     cardId: PropTypes.number.isRequired,
-    ownedId: PropTypes.number,
+    scryfallId: PropTypes.number,
     printings: PropTypes.arrayOf(setType).isRequired,
 };
 

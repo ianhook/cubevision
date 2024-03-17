@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { MISSING_CUBE, OUR_CUBE, OUR_BINDER, REPLACEMENTS_CUBE } from './consts';
+import { MISSING_CUBE, OUR_CUBE, OUR_BINDER, REPLACEMENTS_CUBE } from './consts.js';
 
 const merge = (a, b, predicate = (a, b) => a === b) => {
     const c = [...a]; // copy to avoid side effects
@@ -63,6 +63,11 @@ const getCubeCards = (cards = {}, action) => {
         outCards = { ...cards };
         outCards[OUR_CUBE][cards[OUR_CUBE].indexOf(action.oldCardId)] = action.newCardId;
         outCards[OUR_BINDER][cards[OUR_BINDER].indexOf(action.newCardId)] = action.oldCardId;
+        return outCards;
+    case 'ACQUIRE_CARD':
+        outCards = { ...cards };
+        let index = outCards[MISSING_CUBE].indexOf(action.cardId);
+        outCards[MISSING_CUBE].splice(index, 1);
         return outCards;
     default:
         return cards;

@@ -2,34 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { getMissing } from './helper';
+import { getMissing } from './helper.js';
+import { acquireCard } from './actions.js';
 
 class Acquire extends React.Component {
-    constructor(props) {
-        super(props);
-        this.handleSave = this.handleSave.bind(this);
-    }
-
-    handleSave() {
-        fetch('/api/card/acquire', {
-            method: 'POST',
-            headers: new Headers({ 'Content-Type': 'application/json' }),
-            body: JSON.stringify({
-                cardId: this.cards.value,
-            }),
-        });
-    }
-
     render() {
-        const { cards } = this.props;
+        const { cards, doAcquireCard } = this.props;
         return (
             <div>
-                <select ref={(cardList) => { this.cards = cardList; }}>
-                    {cards.map((card) => (
-                        <option value={card.card_id} key={card.card_id}>{card.name}</option>
-                    ))}
-                </select>
-                <button onClick={this.handleSave}>Save</button>
+                {cards.map((card) => (
+                    <div key={card.card_id} style={{ padding: 8 }}>
+                        {card.name}
+                        <button onClick={() => doAcquireCard(card.card_id)}>Save</button>
+                    </div>
+                ))}
             </div>
         );
     }
@@ -40,6 +26,7 @@ Acquire.propTypes = {
         name: PropTypes.string,
         card_id: PropTypes.number,
     })).isRequired,
+    doAcquireCard: PropTypes.func,
 };
 
 const mapStateToProps = (state) => ({
@@ -54,6 +41,10 @@ const mapStateToProps = (state) => ({
     }),
 });
 
-const ConnectedAcquire = connect(mapStateToProps)(Acquire);
+const mapDispatchToProps = (dispatch) => ({
+    doAcquireCard: (cardId) => dispatch(acquireCard(cardId)),
+});
+
+const ConnectedAcquire = connect(mapStateToProps, mapDispatchToProps)(Acquire);
 
 export default ConnectedAcquire;

@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { cubeType } from './propTypes';
-import PercentComplete from './PercentComplete';
+import { cubeType } from './propTypes.js';
+import PercentComplete from './PercentComplete.js';
 
 const Cubes = ({ cubes }) => (
     <div>

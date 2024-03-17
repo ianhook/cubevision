@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { cubeType } from './propTypes';
+import { cubeType } from './propTypes.js';
 
 const CubeSelector = ({ cubes, onChange }) => (
     <select onChange={(e) => onChange(e.target.value)}>

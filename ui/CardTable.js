@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import CardRow from './CardRow';
-import Sorter from './Sorter';
+import CardRow from './CardRow.js';
+import Sorter from './Sorter.js';
 import {
     colorSort,
     costSort,
@@ -11,9 +11,9 @@ import {
     isInStandard,
     isNotOnlineOnly,
     missingInCube,
-} from './helper';
-import { cardType } from './propTypes';
-import { OUR_CUBE, LAST_CUBE } from './consts';
+} from './helper.js';
+import { cardType } from './propTypes.js';
+import { OUR_CUBE, LAST_CUBE } from './consts.js';
 
 class CardTable extends React.PureComponent {
     constructor(props) {
@@ -64,7 +64,7 @@ class CardTable extends React.PureComponent {
 CardTable.defaultProps = {
     cards: [],
     sortedCards: [],
-    cubeId: OUR_CUBE,
+    cubeId: -1,
 };
 
 CardTable.propTypes = {
@@ -126,10 +126,10 @@ const mapStateToProps = (state, props) => {
         });
     } else if (state.sorter.sort === 'lastCube') {
         sortedCards = sortedCards.sort((a, b) => {
-            if (a.lastCube > b.lastCube) {
+            if (a.lastCube < b.lastCube) {
                 return -1;
             }
-            if (a.lastCube < b.lastCube) {
+            if (a.lastCube > b.lastCube) {
                 return 1;
             }
             return 0;

@@ -1,10 +1,14 @@
-const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser');
-const httpsRedirect = require('express-https-redirect');
+import express from 'express';
+import path from 'path';
+import bodyParser from 'body-parser';
+import httpsRedirect from 'express-https-redirect';
 
-const cubes = require('./backend/cubes');
-const cards = require('./backend/cards');
+import cubes from './backend/cubes.js';
+import cards from './backend/cards.js';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const allowCrossDomain = (req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -22,7 +26,7 @@ const allowCrossDomain = (req, res, next) => {
 
 const app = express();
 
-app.set('port', (process.env.PORT || 5000));
+app.set('port', (process.env.PORT || 5001));
 
 // app.use('/', httpsRedirect());
 

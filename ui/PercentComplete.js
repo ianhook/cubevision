@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { missingInCube } from './helper';
+import { missingInCube } from './helper.js';
 
 const PercentComplete = ({ missing, total, percent }) => (
     <span>&nbsp;{missing} / {total} - {(percent * 100.0).toPrecision(4)}</span>

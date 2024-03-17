@@ -90,3 +90,21 @@ export function fetchCubeCards() {
             .then(json => dispatch(receiveCubeCards(json)));
     };
 }
+
+export const ACQUIRE_CARD = 'ACQUIRE_CARD';
+function acquireCardAction(cardId) {
+    return {
+        type: ACQUIRE_CARD,
+        cardId,
+    };
+}
+export function acquireCard(cardId) {
+    return (dispatch) => {
+        dispatch(acquireCardAction(cardId));
+        return fetch('/api/card/acquire', {
+            method: 'POST',
+            headers: new Headers({ 'Content-Type': 'application/json' }),
+            body: JSON.stringify({ cardId }),
+        });
+    };
+}

@@ -1,5 +1,5 @@
-const pg = require('pg');
-const { isReserved, updateReserved } = require('./utils');
+import pg from 'pg';
+import { isReserved, updateReserved } from './utils.js';
 
 class CardDb {
     constructor(connectionString) {
@@ -83,4 +83,4 @@ class CardDb {
     }
 }
 
-module.exports = CardDb;
+export default CardDb;

@@ -1,9 +1,9 @@
-const express = require('express');
-const pg = require('pg');
+import express from 'express';
+import pg from 'pg';
 // const Scry = require("scryfall-sdk");
-const { getData } = require('./utils');
+import { getData } from './utils.js';
 
-const {
+import {
     acquireCard,
     addCardToCube,
     checkCardInCube,
@@ -13,12 +13,13 @@ const {
     startTransaction,
     commitTransaction,
     rollbackTransaction,
-} = require('./postgres');
-const constants = require('../ui/consts');
+} from './postgres.js';
+import { OUR_BINDER, OUR_CUBE } from '../ui/consts.js';
 
 pg.defaults.ssl = true;
 
 const router = express.Router();
+export default router;
 
 function pool() {
     return new pg.Pool({
@@ -118,5 +119,3 @@ router.get('/', (request, response) => {
 //         });
 //     });
 // });
-
-module.exports = router;

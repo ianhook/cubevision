@@ -1,6 +1,6 @@
 import React from 'react';
 
-import CubeSelector from './CubeSelector';
+import CubeSelector from './CubeSelector.js';
 
 export default class Updater extends React.Component {
     constructor(props) {

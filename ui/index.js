@@ -4,9 +4,9 @@ import { Provider } from 'react-redux';
 import { thunk } from 'redux-thunk';
 import { createStore, applyMiddleware } from 'redux';
 
-import { fetchCubes, fetchCards, fetchCubeCards } from './actions';
-import Router from './Router';
-import todoApp from './reducers';
+import { fetchCubes, fetchCards, fetchCubeCards } from './actions.js';
+import Router from './Router.js';
+import todoApp from './reducers.js';
 
 const store = createStore(
     todoApp,

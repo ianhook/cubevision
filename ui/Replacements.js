@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { replaceCard } from './actions';
-import { OUR_BINDER, LAST_CUBE } from './consts';
-import { sort } from './helper';
-import { cardType } from './propTypes';
+import { replaceCard } from './actions.js';
+import { OUR_BINDER, LAST_CUBE } from './consts.js';
+import { sort } from './helper.js';
+import { cardType } from './propTypes.js';
 
 class Replacements extends React.PureComponent {
     constructor(props) {

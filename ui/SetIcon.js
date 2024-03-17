@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { setType } from './propTypes';
-import { SET_CODES } from './consts';
+import { setType } from './propTypes.js';
+import { SET_CODES } from './consts.js';
 
 const SetIcon = ({ set }) => {
     if (!Object.hasOwnProperty.call(set, 'set')) {

@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import CardTable from './CardTable';
-import { getMissing } from './helper';
+import CardTable from './CardTable.js';
+import { getMissing } from './helper.js';
 
 const Missing = ({ cards }) => (
     <div>

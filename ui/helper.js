@@ -1,4 +1,4 @@
-import { MISSING_CUBE } from './consts';
+import { MISSING_CUBE } from './consts.js';
 
 const standardSets = [
     'ZNR',

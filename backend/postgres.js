@@ -1,6 +1,6 @@
-const constants = require('../ui/consts');
+import { OUR_BINDER } from '../ui/consts.js';
 
-const findOrCreateCard = (name, client, cb) => {
+export const findOrCreateCard = (name, client, cb) => {
     const query = 'select card_id from cards where name = $1';
     client.query(query, [name], (err, result) => {
         console.log(name);
@@ -24,10 +24,10 @@ const findOrCreateCard = (name, client, cb) => {
                 }
             });
         }
-    });
+    }); //641
 };
 
-const addCardToCube = (cubeId, cardId, client) => new Promise((resolve, reject) => {
+export const addCardToCube = (cubeId, cardId, client) => new Promise((resolve, reject) => {
     const query = 'insert into cube_cards (cube_id, card_id) values ($1, $2)';
     client.query(query, [cubeId, cardId], (err) => {
         if (err) {
@@ -46,7 +46,7 @@ const addCardToCube = (cubeId, cardId, client) => new Promise((resolve, reject) 
     });
 });
 
-const removeCardFromCube = (cubeId, cardId, client) => new Promise((resolve, reject) => {
+export const removeCardFromCube = (cubeId, cardId, client) => new Promise((resolve, reject) => {
     const query = 'delete from cube_cards where cube_id = $1 and card_id = $2';
     client.query(query, [cubeId, cardId], (err) => {
         if (err) {
@@ -57,9 +57,9 @@ const removeCardFromCube = (cubeId, cardId, client) => new Promise((resolve, rej
     });
 });
 
-const acquireCard = (cardId, client) => addCardToCube(constants.OUR_BINDER, cardId, client);
+export const acquireCard = (cardId, client) => addCardToCube(OUR_BINDER, cardId, client);
 
-const setVersion = (cardId, multiverseid, scryfallId, client) => new Promise((resolve, reject) => {
+export const setVersion = (cardId, multiverseid, scryfallId, client) => new Promise((resolve, reject) => {
     const query = 'update cards set owned_multiverseid = $2, scryfall_id = $3 where card_id = $1';
     client.query(query, [cardId, multiverseid, scryfallId], (err) => {
         console.log(err);
@@ -71,7 +71,7 @@ const setVersion = (cardId, multiverseid, scryfallId, client) => new Promise((re
     });
 });
 
-const checkCardInCube = (cardId, cubeId, client) => new Promise((resolve, reject) => {
+export const checkCardInCube = (cardId, cubeId, client) => new Promise((resolve, reject) => {
     const query = 'select card_id from cube_cards where card_id = $1 and cube_id = $2';
     client.query(query, [cardId, cubeId], (err) => {
         if (err) {
@@ -82,7 +82,7 @@ const checkCardInCube = (cardId, cubeId, client) => new Promise((resolve, reject
     });
 });
 
-const updatePrintings = (card, cardId, colors, printings, client, reserved) => {
+export const updatePrintings = (card, cardId, colors, printings, client, reserved) => {
     const params = [
         card.cmc,
         card.manaCost,
@@ -107,7 +107,7 @@ const updatePrintings = (card, cardId, colors, printings, client, reserved) => {
     ));
 };
 
-const reserveDB = (client, row, reserved) => {
+export const reserveDB = (client, row, reserved) => {
     if (!reserved) {
         return null;
     }
@@ -129,7 +129,7 @@ const reserveDB = (client, row, reserved) => {
     ));
 };
 
-const startTransaction = (client) => new Promise((resolve, reject) => {
+export const startTransaction = (client) => new Promise((resolve, reject) => {
     client.query('BEGIN', (err) => {
         if (err) {
             reject(err);
@@ -139,7 +139,7 @@ const startTransaction = (client) => new Promise((resolve, reject) => {
     });
 });
 
-const rollbackTransaction = (client) => new Promise((resolve, reject) => {
+export const rollbackTransaction = (client) => new Promise((resolve, reject) => {
     client.query('ROLLBACK', (err) => {
         if (err) {
             reject(err);
@@ -149,7 +149,7 @@ const rollbackTransaction = (client) => new Promise((resolve, reject) => {
     });
 });
 
-const commitTransaction = (client) => new Promise((resolve, reject) => {
+export const commitTransaction = (client) => new Promise((resolve, reject) => {
     client.query('COMMIT', (err) => {
         if (err) {
             reject(err);
@@ -159,17 +159,4 @@ const commitTransaction = (client) => new Promise((resolve, reject) => {
     });
 });
 
-module.exports = {
-    acquireCard,
-    addCardToCube,
-    checkCardInCube,
-    findOrCreateCard,
-    removeCardFromCube,
-    setVersion,
-    updatePrintings,
-    reserveDB,
 
-    startTransaction,
-    commitTransaction,
-    rollbackTransaction,
-};

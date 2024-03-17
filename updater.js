@@ -1,5 +1,5 @@
-const { getData,  } = require('./backend/utils');
-const CardDB = require('./backend/card_db');
+import { getData } from './backend/utils.js';
+import CardDB from './backend/card_db.js';
 
 const args = process.argv.slice(2);
 
@@ -49,7 +49,7 @@ async function updateReserved() {
 }
 
 if (!Number.isNaN(startParam) && !Number.isNaN(endParam)) {
-    return (new Promise((resolve) => doUpdate(resolve, startParam, endParam)))
+    (new Promise((resolve) => doUpdate(resolve, startParam, endParam)))
         .then(() => {
             console.log('done');
             process.exit(); // probably not closing everything correctly
