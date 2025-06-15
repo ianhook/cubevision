@@ -78,6 +78,9 @@ const CardRow = ({ card, isHeader, canEdit }) => {
                 <th>
                     Last Cube
                 </th>
+                <th>
+                    Cube Count
+                </th>
                 {canEdit && (
                     <th style={style}>
                         Remove
@@ -152,6 +155,9 @@ const CardRow = ({ card, isHeader, canEdit }) => {
             </td>
             <td>
                 <CubeName cubeId={card.lastCube} />
+            </td>
+            <td>
+                {card.cubeList && card.cubeList.length}
             </td>
             {canEdit && (
                 <td style={style}>

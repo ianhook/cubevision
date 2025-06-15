@@ -9,7 +9,8 @@ import {
     findOrCreateCard,
 }  from './backend/postgres.js';
 
-const NEWEST_CUBE = 32;
+// insert into cubes (name) values ('Aug 2024');
+const NEWEST_CUBE = 39;
 const CUBE_URL = 'https://www.mtgo.com/vintage-cube-cardlist';
 // const CUBE_URL = 'https://magic.wizards.com/en/articles/archive/vintage-cube-cardlist';
 // const CUBE_URL = 'https://magic.wizards.com/en/articles/archive/magic-online/vintage-cube-july-2021-update';

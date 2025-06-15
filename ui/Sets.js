@@ -43,7 +43,7 @@ const Sets = ({ printings, scryfallId, cardId }) => {
                         tabIndex={0}
                         style={{
                             display: (!matches || scryfallId === set.scryfallId ||
-                            (scryfallId === null && i === (arr.length - 1))) ? 'inline-block' : 'none'
+                            (scryfallId === null && i === 0)) ? 'inline-block' : 'none'
                         }}
                         onClick={handleSave(cardId, set.multiverseid, set.scryfallId)}
                         onMouseEnter={() => setShowImage(set.scryfallId)}

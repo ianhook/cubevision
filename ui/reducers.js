@@ -19,23 +19,57 @@ const parseManaCosts = (manaCost) => {
 const cubes = (currentCubes = {}, action) => {
     switch (action.type) {
     case 'RECEIVE_CUBES':
-        return action.cubes.reduce((init, cube) => ({ ...init, [cube.cube_id]: cube }));
+        return action.cubes.reduce((init, cube) => ({ ...init, [cube.cube_id]: cube }), []);
     default:
         return currentCubes;
+    }
+};
+
+const constants = (cachedValues = { lastCubeId: 0 }, action) => {
+    switch (action.type) {
+    case 'RECEIVE_CUBES':
+        return {
+            ...cachedValues,
+            lastCubeId: action.cubes.reduce((max, cube) => max < cube.cube_id ? cube.cube_id : max, 0)
+        };
+    default:
+        return cachedValues;
     }
 };
 
 const getCards = (cards = {}, action) => {
     switch (action.type) {
     case 'RECEIVE_CARDS':
-        return action.cards.reduce((init, card) => ({
-            ...init,
-            [card.card_id]: {
+        return action.cards.reduce((init, card) => {
+            const ret = { ...init };
+            ret[card.card_id] = {
+                lastCube: 0,
+                ...ret[card.card_id],
                 ...card,
                 printings: JSON.parse(card.printings),
                 manaCost: parseManaCosts(card.mana_cost),
-            },
-        }), {});
+            };
+            return ret;
+        }, cards);
+    case 'RECEIVE_CUBE_CARDS':
+        // eslint-disable-next-line camelcase
+        return action.cubes.reduce((init, { card_id, cube_id }) => {
+            const ret = { ...init };
+            const cubeId = parseInt(cube_id, 10);
+            if (![OUR_CUBE, OUR_BINDER].includes(cube_id)) {
+                if (!Object.hasOwnProperty.call(ret, card_id)) {
+                    ret[card_id] = {
+                        lastCube: cube_id,
+                        cubeList: [],
+                    };
+                }
+                ret[card_id].cubeList.push(cubeId);
+                if (cubeId > ret[card_id].lastCube) {
+                    ret[card_id].lastCube = cubeId;
+                }
+            }
+            return ret;
+        }, cards);
     default:
         return cards;
     }
@@ -74,32 +108,6 @@ const getCubeCards = (cards = {}, action) => {
     }
 };
 
-const cardCubes = (cards = {}, action) => {
-    switch (action.type) {
-    case 'RECEIVE_CUBE_CARDS':
-        // eslint-disable-next-line camelcase
-        return action.cubes.reduce((init, { card_id, cube_id }) => {
-            const ret = { ...init };
-            const cubeId = parseInt(cube_id, 10);
-            if (![OUR_CUBE, OUR_BINDER].includes(cube_id)) {
-                if (!Object.hasOwnProperty.call(ret, card_id)) {
-                    ret[card_id] = {
-                        lastCube: cube_id,
-                        cubeList: [],
-                    };
-                }
-                ret[card_id].cubeList.push(cubeId);
-                if (cubeId > ret[card_id].lastCube) {
-                    ret[card_id].lastCube = cubeId;
-                }
-            }
-            return ret;
-        }, {});
-    default:
-        return cards;
-    }
-};
-
 const sorter = (sortings = {
     sort: 'name',
 }, action) => {
@@ -115,8 +123,8 @@ const rootReducer = combineReducers({
     cubes,
     getCards,
     getCubeCards,
-    cardCubes,
     sorter,
+    constants,
 });
 
 export default rootReducer;

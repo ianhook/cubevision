@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { replaceCard } from './actions.js';
-import { OUR_BINDER, LAST_CUBE } from './consts.js';
+import { OUR_BINDER } from './consts.js';
 import { sort } from './helper.js';
 import { cardType } from './propTypes.js';
 
@@ -80,13 +80,14 @@ const validReplacement = (oldCard, card) => {
 const mapStateToProps = (state, props) => {
     let cards = [];
     const oldCard = state.getCards[props.cardId];
-    const oldCardLastCube = state.cardCubes[props.cardId]?.lastCube;
-    if (oldCardLastCube < LAST_CUBE) {
+    const { lastCubeId } = state.constants;
+    const oldCardLastCube = oldCard?.lastCube;
+    if (oldCardLastCube < lastCubeId) {
         const suggestReplacements = state.sorter.replacements;
         const sorter = suggestReplacements ? sort('lastCube', true) : sort();
         if (Object.hasOwnProperty.call(state.getCubeCards, OUR_BINDER)) {
             cards = state.getCubeCards[OUR_BINDER]
-                .map((cardId) =>  ({ ...state.getCards[cardId], lastCube: state.cardCubes[cardId]?.lastCube || 0 }))
+                .map((card_id) => state.getCards[card_id])
                 .filter((card) => card.lastCube > 0
                     && (!suggestReplacements || (oldCardLastCube < card.lastCube
                         && validReplacement(oldCard, card))))

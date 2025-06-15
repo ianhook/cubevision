@@ -1,5 +1,3 @@
-
-export const LAST_CUBE = 32;
 export const OUR_CUBE = 8;
 export const OUR_BINDER = 9;
 export const MISSING_CUBE = 0;

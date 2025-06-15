@@ -63,7 +63,7 @@ class CardDb {
             cardId,
             card.reserved,
             // card.scryfallId,
-            card.usd,
+            card.usd || 0,
             card.usdUpdated,
             JSON.stringify(printings),
             colors,

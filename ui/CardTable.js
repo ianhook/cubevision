@@ -13,7 +13,7 @@ import {
     missingInCube,
 } from './helper.js';
 import { cardType } from './propTypes.js';
-import { OUR_CUBE, LAST_CUBE } from './consts.js';
+import { OUR_CUBE } from './consts.js';
 
 class CardTable extends React.PureComponent {
     constructor(props) {
@@ -28,11 +28,11 @@ class CardTable extends React.PureComponent {
     }
 
     render() {
-        const { sortedCards, cards, cubeId } = this.props;
+        const { sortedCards, cards, cubeId, lastCubeId } = this.props;
         const canEdit = cubeId === OUR_CUBE;
         return (
             <div>
-                <Sorter isCurrentCube={cubeId === LAST_CUBE} />
+                <Sorter isCurrentCube={cubeId === lastCubeId} />
                 <button type="button" onClick={this.copyBuylist}>Copy Buylist</button>
                 <div style={{ margin: 4, fontWeight: 'bold' }}>
                     {`${sortedCards.length} of ${cards.length}`}
@@ -74,7 +74,8 @@ CardTable.propTypes = {
 };
 
 const mapStateToProps = (state, props) => {
-    let sortedCards = props.cards.filter((card) => card).map((card) => {
+    const { lastCubeId } = state.constants;
+    let sortedCards = props.cards.filter((card) => card?.name).map((card) => {
         const cubes = Object.keys(state.getCubeCards).filter((cubeId) => {
             if (cubeId === '8' || cubeId === '9') {
                 return false;
@@ -88,7 +89,7 @@ const mapStateToProps = (state, props) => {
     if (state.sorter.standard) {
         sortedCards = sortedCards.filter((card) => !isInStandard(card));
     }
-    const filterCube = props.cubeId === LAST_CUBE ? OUR_CUBE : LAST_CUBE;
+    const filterCube = props.cubeId === lastCubeId ? OUR_CUBE : lastCubeId;
     if (state.sorter.current) {
         sortedCards = sortedCards.filter((card) => (
             state.getCubeCards[filterCube].indexOf(card.card_id) > -1));
@@ -127,10 +128,16 @@ const mapStateToProps = (state, props) => {
     } else if (state.sorter.sort === 'lastCube') {
         sortedCards = sortedCards.sort((a, b) => {
             if (a.lastCube < b.lastCube) {
-                return -1;
+                return 1;
             }
             if (a.lastCube > b.lastCube) {
+                return -1;
+            }
+            if (a.cubeList.length < b.cubeList.length ) {
                 return 1;
+            }
+            if (a.cubeList.length  > b.cubeList.length ) {
+                return -1;
             }
             return 0;
         });
@@ -156,6 +163,7 @@ const mapStateToProps = (state, props) => {
         sortedCards = sortedCards.sort(costSort);
     }
     return {
+        lastCubeId,
         sortedCards,
     };
 };
