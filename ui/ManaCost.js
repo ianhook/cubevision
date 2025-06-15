@@ -1,15 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const colors = {
-    'W': 'white',
-    'G': 'green',
-    'B': 'black',
-    'U': 'blue',
-    'R': 'red',
-    'C': 'colorless'
-};
-
 const numberStyle = {
     backgroundColor: '#bfb5b4',
     borderRadius: '3.40282e+38px',
@@ -33,27 +24,19 @@ const ManaCost = ({ manaCost }) => {
                 if (x === ' / ' || x === '  ') {
                     return ' // ';
                 }
-                if (!isNaN(x)) {
+                if (!isNaN(x) || x === 'X') {
                     return (
                         <div style={numberStyle}>{x}</div>
                     );
-                }
-                if (colors.hasOwnProperty(x)) {
-                    return (
-                        <img
-                            key={i} // eslint-disable-line react/no-array-index-key
-                            alt={x}
-                            src={`/img/${colors[x]}.svg`}
-                        />
-                    )
                 }
                 return (
                     <img
                         key={i} // eslint-disable-line react/no-array-index-key
                         alt={x}
-                        src={`https://gatherer.wizards.com/Handlers/Image.ashx?size=medium&name=${x}&type=symbol`}
+                        src={`/img/${x.toLowerCase()}.svg`}
+                        style={{ color: 'red' }}
                     />
-                );
+                )
             })}
         </div>
     );
