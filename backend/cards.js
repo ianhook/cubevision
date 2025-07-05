@@ -87,28 +87,3 @@ if (process.env.NODE_ENV === 'dev') {
         });
     });
 }
-
-// router.get('/update', (request, response) => {
-//     pool().connect((connErr, client, done) => {
-//         client.query('select * from cards where printings is null limit 2;', (err, result) => {
-//             // console.log(result);
-//             if (err) {
-//                 response.send(`Error ${err}`);
-//             } else {
-//                 Promise.all(
-//                     result.rows.map(row => getData(row, {})
-//                         .then(data => updatePrintings(
-//                             data.card, data.cardId,
-//                             data.colors, data.printings, client,
-//                         ))),
-//                 )
-//                     .then(() => response.send('success'))
-//                     .catch((dataErr) => {
-//                         console.log('update error', dataErr);
-//                         return response.status(500).send(dataErr);
-//                     })
-//                     .finally(() => done());
-//             }
-//         });
-//     });
-// });
