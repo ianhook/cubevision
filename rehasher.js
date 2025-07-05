@@ -3,9 +3,10 @@ const { moveToHashes, moveFromHashes } = require('./backend/utils');
 const constants = require('./ui/consts');
 
 function pool() {
+    const db_conn_str = `postgresql://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_URL}`;
     return new pg.Pool({
-        connectionString: process.env.DATABASE_URL || 'postgresql://ianhook@localhost:5432/ianhook',
-        ssl: process.env.DATABASE_URL ? true : false,
+        connectionString: db_conn_str,
+        ssl: false,
     });
 }
 

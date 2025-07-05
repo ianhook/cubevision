@@ -1,26 +1,16 @@
 import express from 'express';
-import pg from 'pg';
 
 import {
     addCardToCube,
     findOrCreateCard,
+    pool,
 } from './postgres.js';
-
-pg.defaults.ssl = true;
 
 const router = express.Router();
 export default router;
 
-function pool() {
-    return new pg.Pool({
-        connectionString: process.env.DATABASE_URL || 'postgresql://ianhook@localhost:5432/ianhook',
-        ssl: false,
-    });
-}
-
 // define the home page route
 router.get('/', (request, response) => {
-    console.log(process.env.DATABASE_URL);
     pool().connect((connErr, client, done) => {
         console.log(connErr);
         client.query('select * from cubes;', (err, result) => {

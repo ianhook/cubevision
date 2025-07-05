@@ -17,8 +17,9 @@ const CUBE_URL = 'https://www.mtgo.com/vintage-cube-cardlist';
 // const CUBE_URL = 'https://magic.wizards.com/en/articles/archive/magic-online/spotlight-cube-series-alt-vintage-cube-2021-05-26';
 
 function pool() {
+    const db_conn_str = `postgresql://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_URL}`;
     return new pg.Pool({
-        connectionString: process.env.DATABASE_URL || 'postgresql://ianhook@localhost:5432/ianhook',
+        connectionString: db_conn_str,
         ssl: false,
     });
 }

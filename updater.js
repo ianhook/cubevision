@@ -10,7 +10,8 @@ const STEP = 1;
 async function doUpdate(resolve, start, end) {
     let current = start;
     let currentEnd = end;
-    const db = new CardDB(process.env.DATABASE_URL || 'postgresql://ianhook:postgres@localhost:5432/ianhook');
+    const db_conn_str = `postgresql://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_URL}`;
+    const db = new CardDB(db_conn_str);
     // await db.initialize();
     while (current <= end) {
         console.log(current, end)
@@ -44,7 +45,8 @@ async function doUpdate(resolve, start, end) {
 }
 
 async function updateReserved() {
-    const db = new CardDB(process.env.DATABASE_URL);
+    const db_conn_str = `postgresql://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_URL}`;
+    const db = new CardDB(db_conn_str);
     await db.updateReservedCards();
 }
 

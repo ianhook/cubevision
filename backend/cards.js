@@ -1,5 +1,4 @@
 import express from 'express';
-import pg from 'pg';
 // const Scry = require("scryfall-sdk");
 import { getData } from './utils.js';
 
@@ -13,20 +12,20 @@ import {
     startTransaction,
     commitTransaction,
     rollbackTransaction,
+    pool,
 } from './postgres.js';
 import { OUR_BINDER, OUR_CUBE } from '../ui/consts.js';
-
-pg.defaults.ssl = true;
 
 const router = express.Router();
 export default router;
 
-function pool() {
-    return new pg.Pool({
-        connectionString: process.env.DATABASE_URL || 'postgresql://ianhook@localhost:5432/ianhook',
-        ssl: false,
-    });
-}
+// function pool() {
+//     const db_conn_str = `postgresql://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_URL}`;
+//     return new pg.Pool({
+//         connectionString: db_conn_str,
+//         ssl: false,
+//     });
+// }
 
 // define the home page route
 router.get('/', (request, response) => {

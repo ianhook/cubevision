@@ -1,4 +1,19 @@
 import { OUR_BINDER } from '../ui/consts.js';
+import pg from 'pg';
+import fs from 'fs';
+
+pg.defaults.ssl = true;
+
+export const pool = () => {
+    const pass = process.env.POSTGRES_PASSWORD || fs.readFileSync(process.env.POSTGRES_PASSWORD_FILE, 'utf8').trim()
+    const db_conn_str = `postgresql://${process.env.POSTGRES_USER}:${pass}@${process.env.POSTGRES_URL}`;
+    console.log(db_conn_str);
+    console.log(process.env)
+    return new pg.Pool({
+        connectionString: db_conn_str,
+        ssl: false,
+    });
+}
 
 export const findOrCreateCard = (name, client, cb) => {
     const query = 'select card_id from cards where name = $1';
