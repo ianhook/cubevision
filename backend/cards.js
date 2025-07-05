@@ -19,13 +19,6 @@ import { OUR_BINDER, OUR_CUBE } from '../ui/consts.js';
 const router = express.Router();
 export default router;
 
-// function pool() {
-//     const db_conn_str = `postgresql://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_URL}`;
-//     return new pg.Pool({
-//         connectionString: db_conn_str,
-//         ssl: false,
-//     });
-// }
 
 // define the home page route
 router.get('/', (request, response) => {
@@ -41,58 +34,59 @@ router.get('/', (request, response) => {
     });
 });
 
-// router.post('/setversion', (request, response) => {
-//     console.log('setversion');
-//     const { cardId, multiverseid, scryfallId } = request.body;
-//     console.log(request.body);
-//     pool().connect((connErr, client, done) => {
-//         setVersion(cardId, multiverseid, scryfallId, client)
-//             .then(() => {
-//                 response.send(true);
-//                 done();
-//             })
-//             .catch((err) => {
-//                 response.send(err);
-//                 done();
-//             });
-//     });
-// });
+if (process.env.NODE_ENV === 'dev') {
+    router.post('/setversion', (request, response) => {
+        const { cardId, multiverseid, scryfallId } = request.body;
+        console.log(request.body);
+        pool().connect((connErr, client, done) => {
+            setVersion(cardId, multiverseid, scryfallId, client)
+                .then(() => {
+                    response.send(true);
+                    done();
+                })
+                .catch((err) => {
+                    response.send(err);
+                    done();
+                });
+        });
+    });
 
-// router.post('/acquire', (request, response) => {
-//     const { cardId } = request.body;
-//     pool().connect((connErr, client, done) => acquireCard(cardId, client)
-//         .then(() => {
-//             console.log('acquired');
-//             response.send(true);
-//             done();
-//         }));
-// });
+    router.post('/acquire', (request, response) => {
+        const { cardId } = request.body;
+        pool().connect((connErr, client, done) => acquireCard(cardId, client)
+            .then(() => {
+                console.log('acquired');
+                response.send(true);
+                done();
+            }));
+    });
 
-// router.post('/replace', (request, response) => {
-//     const { newCardId, oldCardId } = request.body;
-//     pool().connect((connErr, client, done) => {
-//         Promise.all([
-//             checkCardInCube(newCardId, constants.OUR_BINDER, client),
-//             checkCardInCube(oldCardId, constants.OUR_CUBE, client),
-//         ])
-//             .then(() => startTransaction(client))
-//             .then(Promise.all([
-//                 addCardToCube(constants.OUR_CUBE, newCardId, client),
-//                 addCardToCube(constants.OUR_BINDER, oldCardId, client),
-//                 removeCardFromCube(constants.OUR_BINDER, newCardId, client),
-//                 removeCardFromCube(constants.OUR_CUBE, oldCardId, client),
-//             ]))
-//             .then(() => commitTransaction(client))
-//             .catch((err) => {
-//                 console.log(err);
-//                 return rollbackTransaction(client);
-//             })
-//             .then((json) => {
-//                 response.send(json);
-//                 done();
-//             });
-//     });
-// });
+    router.post('/replace', (request, response) => {
+        const { newCardId, oldCardId } = request.body;
+        pool().connect((connErr, client, done) => {
+            Promise.all([
+                checkCardInCube(newCardId, OUR_BINDER, client),
+                checkCardInCube(oldCardId, OUR_CUBE, client),
+            ])
+                .then(() => startTransaction(client))
+                .then(Promise.all([
+                    addCardToCube(OUR_CUBE, newCardId, client),
+                    addCardToCube(OUR_BINDER, oldCardId, client),
+                    removeCardFromCube(OUR_BINDER, newCardId, client),
+                    removeCardFromCube(OUR_CUBE, oldCardId, client),
+                ]))
+                .then(() => commitTransaction(client))
+                .catch((err) => {
+                    console.log(err);
+                    return rollbackTransaction(client);
+                })
+                .then((json) => {
+                    response.send(json);
+                    done();
+                });
+        });
+    });
+}
 
 // router.get('/update', (request, response) => {
 //     pool().connect((connErr, client, done) => {

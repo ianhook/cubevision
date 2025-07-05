@@ -57,12 +57,12 @@ async function main() {
             .then((res) => res.text())
             .then((body) => parser.parse(body))
             // .then((el) => { console.log(el); return el; })
-            .then((el) => el.querySelectorAll('tbody')[1])
-            // .then((el) => { console.log(el, el.length); return el; })
+            .then((el) => el.querySelectorAll('tbody')[0])
+            // .then((el) => { console.log(el); return el; })
             .then((table) => table.querySelectorAll('tr'))
             // .then((el) => { console.log(el, el.length); return el; })
-            .then((rows) => rows.map((row) => row.querySelectorAll('td')[0].text))
-            .then((el) => { console.log(el, el.length); return el; })
+            .then((rows) => rows.map((row) => row.querySelectorAll('td')[1]?.text).filter((c) => c))
+            // .then((el) => { console.log(el, el.length); return el; })
             .then((cardNames) => insertCards(NEWEST_CUBE, cardNames))
             .then(() => resolve());
     });
