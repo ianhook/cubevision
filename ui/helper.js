@@ -1,18 +1,27 @@
-import { MISSING_CUBE } from './consts.js';
+import { MISSING_CUBE, OUR_CUBE } from './consts.js';
 
 const standardSets = [
-    'ZNR',
-    'KHM',
-    'STX',
-    'AFR',
-    'MID',
-    'VOW',
-    'NEO',
-    'SNC',
+    'DMU',
+    'BRO',
+    'ONE',
+    'MOM',
+    'MAT',
+    'WOE',
+    'LCI',
+    'MKM',
+    'OTJ',
+    'BIG',
+    'BLB',
+    'DSK',
+    'FDN',
+    'DFT',
+    'TDM',
+    'FIN',
 ];
 
-const isInStandard = (card) => JSON.parse(card.printings)
+const isInStandard = (printings) => printings
     .reduce((init, set) => init || standardSets.indexOf(set.set) !== -1, false);
+
 
 const isNotOnlineOnly = (set) => !(/ME[D1-4]|VMA|TPR|PZ1|PMODO/i.test(set.set));
 
@@ -30,6 +39,35 @@ const missingInCube = (state, cubeId) => {
 
     return missingCards.filter((card) => cardsInCube.includes(parseInt(card, 10)));
 };
+
+const cardFilter = (state, cubeId) => (card) => {
+    if (!card?.name) {
+        return false;
+    }
+    if (state.sorter.standard && card.inStandard) {
+        return false;
+    }
+    if (state.sorter.reserved && !card.reserved) {
+        return false;
+    }
+
+    if (state.sorter.missing) {
+        const missing = missingInCube(state, cubeId).map((id) => parseInt(id, 10));
+        if (!missing.includes(card.card_id)) {
+            return false;
+        }
+    }
+
+    const { lastCubeId } = state.constants;
+    const filterCube = cubeId === lastCubeId ? OUR_CUBE : lastCubeId;
+    if (state.sorter.current &&  state.getCubeCards[filterCube].indexOf(card.card_id) === -1) {
+        return false;
+    }
+    if (state.sorter.excludeCurrent && state.getCubeCards[filterCube].indexOf(card.card_id) > -1) {
+        return false;
+    }
+    return true;
+}
 
 const colorSortHelper = (cardA, cardB) => {
     let a = cardA.color;
@@ -138,4 +176,5 @@ export {
     isNotOnlineOnly,
     missingInCube,
     sort,
+    cardFilter,
 };

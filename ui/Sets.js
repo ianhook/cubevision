@@ -47,7 +47,7 @@ const Sets = ({ printings, scryfallId, cardId }) => {
                         }}
                         onClick={handleSave(cardId, set.multiverseid, set.scryfallId)}
                         onMouseEnter={() => setShowImage(set.scryfallId)}
-                        onMouseLeave={() => showImage === set.scryfallId ? setShowImage(false) : null}
+                        onMouseLeave={() => !showImage || showImage === set.scryfallId ? setShowImage(false) : null}
                     >
                         <SetIcon
                             set={set}

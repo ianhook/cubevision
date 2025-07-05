@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import { MISSING_CUBE, OUR_CUBE, OUR_BINDER, REPLACEMENTS_CUBE } from './consts.js';
+import { isInStandard } from './helper.js';
 
 const merge = (a, b, predicate = (a, b) => a === b) => {
     const c = [...a]; // copy to avoid side effects
@@ -42,12 +43,14 @@ const getCards = (cards = {}, action) => {
     case 'RECEIVE_CARDS':
         return action.cards.reduce((init, card) => {
             const ret = { ...init };
+            const printings = JSON.parse(card.printings);
             ret[card.card_id] = {
                 lastCube: 0,
                 ...ret[card.card_id],
                 ...card,
-                printings: JSON.parse(card.printings),
+                printings: printings,
                 manaCost: parseManaCosts(card.mana_cost),
+                inStandard: isInStandard(printings)
             };
             return ret;
         }, cards);

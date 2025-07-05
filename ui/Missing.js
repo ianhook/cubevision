@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import CardTable from './CardTable.js';
-import { getMissing } from './helper.js';
+import { cardFilter, getMissing } from './helper.js';
+import { MISSING_CUBE } from './consts.js';
 
 const Missing = ({ cards }) => (
     <div>
@@ -23,9 +24,13 @@ Missing.propTypes = {
     })),
 };
 
-const mapStateToProps = (state) => ({
-    cards: getMissing(state).map((card) => state.getCards[card]),
-});
+const mapStateToProps = (state) => {
+    let cards = getMissing(state).map((card) => state.getCards[card])
+            .filter(cardFilter(state, MISSING_CUBE));
+    return ({
+        cards,
+    });
+};
 
 const ConnectedMissing = connect(mapStateToProps)(Missing);
 

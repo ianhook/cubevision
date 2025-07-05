@@ -75,36 +75,8 @@ CardTable.propTypes = {
 
 const mapStateToProps = (state, props) => {
     const { lastCubeId } = state.constants;
-    let sortedCards = props.cards.filter((card) => card?.name).map((card) => {
-        const cubes = Object.keys(state.getCubeCards).filter((cubeId) => {
-            if (cubeId === '8' || cubeId === '9') {
-                return false;
-            }
-            const cube = state.getCubeCards[cubeId];
-            return cube.indexOf(card.card_id) >= 0;
-        });
-        const lastCube = Math.max(...cubes.map((c) => parseInt(c, 10)));
-        return { ...card, lastCube };
-    });
-    if (state.sorter.standard) {
-        sortedCards = sortedCards.filter((card) => !isInStandard(card));
-    }
-    const filterCube = props.cubeId === lastCubeId ? OUR_CUBE : lastCubeId;
-    if (state.sorter.current) {
-        sortedCards = sortedCards.filter((card) => (
-            state.getCubeCards[filterCube].indexOf(card.card_id) > -1));
-    }
-    if (state.sorter.excludeCurrent) {
-        sortedCards = sortedCards.filter((card) => (
-            state.getCubeCards[filterCube].indexOf(card.card_id) === -1));
-    }
-    if (state.sorter.reserved) {
-        sortedCards = sortedCards.filter((card) => card.reserved);
-    }
-    if (state.sorter.missing) {
-        const missing = missingInCube(state, props.cubeId).map((id) => parseInt(id, 10));
-        sortedCards = sortedCards.filter((card) => missing.includes(card.card_id));
-    }
+    let sortedCards = props.cards;
+
     if (state.sorter.sort === 'name' || state.sorter.sort === 'types') {
         sortedCards = sortedCards.sort(sort(state.sorter.sort));
     } else if (state.sorter.sort === 'price') {

@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 
 import CardTable from './CardTable.js';
 import { cubeType, cardType } from './propTypes.js';
+import { cardFilter } from './helper.js';
 
 const Cube = ({ cube, cards, cubeId }) => (
     <div>
@@ -28,7 +29,8 @@ const mapStateToProps = (state, { cubeId }) => {
     let cards = [];
     if (Object.hasOwnProperty.call(state.getCubeCards, cubeId)) {
         cards = state.getCubeCards[cubeId]
-            .map((cardId) => state.getCards[cardId]);
+            .map((cardId) => state.getCards[cardId])
+            .filter(cardFilter(state, cubeId));
     }
     return ({
         cube: state.cubes[cubeId],
