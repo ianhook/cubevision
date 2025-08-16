@@ -112,20 +112,21 @@ const mapStateToProps = (state, props) => {
             return 0;
         });
     } else if (state.sorter.sort === 'age') {
+        const backup = sort('name')
         sortedCards = sortedCards.sort((cardA, cardB) => {
             const a = cardA.printings
-                .filter((set) => isNotOnlineOnly(set) && set.multiverseid)
-                .reduce((init, set) => (init > set.multiverseid ? init : set.multiverseid), 0);
+                .filter((set) => isNotOnlineOnly(set) && set.releasedAt)
+                .reduce((init, set) => (init < set.releasedAt ? init : set.releasedAt), 0);
             const b = cardB.printings
-                .filter((set) => isNotOnlineOnly(set) && set.multiverseid)
-                .reduce((init, set) => (init > set.multiverseid ? init : set.multiverseid), 0);
+                .filter((set) => isNotOnlineOnly(set) && set.releasedAt)
+                .reduce((init, set) => (init < set.releasedAt ? init : set.releasedAt), 0);
             if (a > b) {
                 return -1;
             }
             if (a < b) {
                 return 1;
             }
-            return sort('name');
+            return backup(cardA, cardB);
         });
     } else if (state.sorter.sort === 'color') {
         sortedCards = sortedCards.sort(colorSort);

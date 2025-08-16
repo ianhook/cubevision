@@ -146,7 +146,7 @@ const Sorter = ({ onChange, isCurrentCube }) => {
                         onChange={(e) => onChange(e.target.name, e.target.id)}
                     />
                     <label htmlFor="age" style={{ marginLeft: '4px' }}>
-                        Age(?)
+                        Release Date
                     </label>
                 </div>
 
