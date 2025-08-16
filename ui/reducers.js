@@ -43,14 +43,12 @@ const getCards = (cards = {}, action) => {
     case 'RECEIVE_CARDS':
         return action.cards.reduce((init, card) => {
             const ret = { ...init };
-            const printings = JSON.parse(card.printings);
             ret[card.card_id] = {
                 lastCube: 0,
                 ...ret[card.card_id],
                 ...card,
-                printings: printings,
                 manaCost: parseManaCosts(card.mana_cost),
-                inStandard: isInStandard(printings)
+                inStandard: isInStandard(card.printings)
             };
             return ret;
         }, cards);

@@ -23,7 +23,7 @@ export default router;
 // define the home page route
 router.get('/', (request, response) => {
     pool().connect((connErr, client, done) => {
-        client.query('select * from cards;', (err, result) => {
+        client.query('select *, printings::json as printings from cards;', (err, result) => {
             if (err) {
                 response.send(`Error ${err}`);
             } else {
