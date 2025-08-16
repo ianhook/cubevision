@@ -74,7 +74,7 @@ export const RECEIVE_CUBE_CARDS = 'RECEIVE_CUBE_CARDS';
 function receiveCubeCards(json) {
     return {
         type: RECEIVE_CUBE_CARDS,
-        cubes: json,
+        cardCubes: json,
         receivedAt: Date.now(),
     };
 }

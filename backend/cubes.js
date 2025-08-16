@@ -25,7 +25,7 @@ router.get('/', (request, response) => {
 });
 
 router.get('/cards', (request, response) => {
-    const query = 'select * from cube_cards';
+    const query = 'select card_id, array_agg(cube_id) as cube_ids from cube_cards group by card_id';
     pool().connect((connErr, client, done) => {
         client.query(query, (err, result) => {
             if (err) {

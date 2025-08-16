@@ -56,21 +56,19 @@ const getCards = (cards = {}, action) => {
         }, cards);
     case 'RECEIVE_CUBE_CARDS':
         // eslint-disable-next-line camelcase
-        return action.cubes.reduce((init, { card_id, cube_id }) => {
+        return action.cardCubes.reduce((init, { card_id, cube_ids }) => {
             const ret = { ...init };
-            const cubeId = parseInt(cube_id, 10);
-            if (![OUR_CUBE, OUR_BINDER].includes(cube_id)) {
-                if (!Object.hasOwnProperty.call(ret, card_id)) {
-                    ret[card_id] = {
-                        lastCube: cube_id,
-                        cubeList: [],
-                    };
-                }
-                ret[card_id].cubeList.push(cubeId);
-                if (cubeId > ret[card_id].lastCube) {
-                    ret[card_id].lastCube = cubeId;
-                }
+            const cubeList = cube_ids.filter((id) => ![OUR_CUBE, OUR_BINDER].includes(id));
+
+            if (!Object.hasOwnProperty.call(ret, card_id)) {
+                ret[card_id] = {
+                    lastCube: Math.max(...cubeList),
+                    cubeList,
+                };
             }
+            ret[card_id].cubeList = cubeList;
+            ret[card_id].lastCube = Math.max(...cubeList);
+
             return ret;
         }, cards);
     default:
@@ -84,12 +82,14 @@ const getCubeCards = (cards = {}, action) => {
     switch (action.type) {
     case 'RECEIVE_CUBE_CARDS':
         // eslint-disable-next-line camelcase
-        outCards = action.cubes.reduce((init, { card_id, cube_id }) => {
+        outCards = action.cardCubes.reduce((init, { card_id, cube_ids }) => {
             const ret = { ...init };
-            if (!Object.hasOwnProperty.call(ret, cube_id)) {
-                ret[cube_id] = [];
-            }
-            ret[cube_id].push(parseInt(card_id, 10));
+            cube_ids.forEach((cube_id) => {
+                if (!Object.hasOwnProperty.call(ret, cube_id)) {
+                    ret[cube_id] = [];
+                }
+                ret[cube_id].push(card_id);
+            });
             return ret;
         }, {});
         ownedCards = merge(outCards[OUR_BINDER], outCards[OUR_CUBE]);

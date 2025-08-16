@@ -10,8 +10,8 @@ import {
 }  from './backend/postgres.js';
 
 // insert into cubes (name) values ('Aug 2024');
-const NEWEST_CUBE = 39;
-const CUBE_URL = 'https://www.mtgo.com/vintage-cube-cardlist';
+const NEWEST_CUBE = 40;
+const CUBE_URL = 'https://www.mtgo.com/news/fin-vintage-cube-update';
 // const CUBE_URL = 'https://magic.wizards.com/en/articles/archive/vintage-cube-cardlist';
 // const CUBE_URL = 'https://magic.wizards.com/en/articles/archive/magic-online/vintage-cube-july-2021-update';
 // const CUBE_URL = 'https://magic.wizards.com/en/articles/archive/magic-online/spotlight-cube-series-alt-vintage-cube-2021-05-26';
@@ -57,11 +57,12 @@ async function main() {
             .then((res) => res.text())
             .then((body) => parser.parse(body))
             // .then((el) => { console.log(el); return el; })
-            .then((el) => el.querySelectorAll('tbody')[0])
+            .then((el) => el.querySelectorAll('tbody')[1])
             // .then((el) => { console.log(el); return el; })
             .then((table) => table.querySelectorAll('tr'))
             // .then((el) => { console.log(el, el.length); return el; })
-            .then((rows) => rows.map((row) => row.querySelectorAll('td')[1]?.text).filter((c) => c))
+            .then((rows) => rows.map((row) => row.querySelectorAll('td')[1]?.text)
+                .filter((c) => c && !c.endsWith('Card Name')))
             // .then((el) => { console.log(el, el.length); return el; })
             .then((cardNames) => insertCards(NEWEST_CUBE, cardNames))
             .then(() => resolve());
