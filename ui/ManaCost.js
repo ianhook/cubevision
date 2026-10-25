@@ -34,7 +34,7 @@ const ManaCost = ({ manaCost }) => {
                         key={i} // eslint-disable-line react/no-array-index-key
                         alt={x}
                         src={`/img/${x.toLowerCase()}.svg`}
-                        style={{ color: 'red' }}
+                        style={{ color: 'red', width: '25px' }}
                     />
                 )
             })}

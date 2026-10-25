@@ -19,8 +19,13 @@ const standardSets = [
     'FIN',
 ];
 
-const isInStandard = (printings) => printings
-    .reduce((init, set) => init || standardSets.indexOf(set.set) !== -1, false);
+const isInStandard = (printings) => {
+    if (printings === null) {
+        return true;
+    }
+    return printings
+        .reduce((init, set) => init || standardSets.indexOf(set.set) !== -1, false);
+};
 
 
 const isNotOnlineOnly = (set) => !(/ME[D1-4]|VMA|TPR|PZ1|PMODO/i.test(set.set));

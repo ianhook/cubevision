@@ -13,7 +13,17 @@ export const pool = () => {
     });
 }
 
-export const findOrCreateCard = (name, client, cb) => {
+const fakes = {
+    'Makdee and Itla, Skysnarers': 'Spider-Woman, Stunning Savior',
+    'Desecrex, Gift of Servitude': 'Carnage, Crimson Chaos',
+    'Kavaero, Mind-Bitten': 'Superior Spider-Man',
+}
+
+const translateName = (raw_name) => 
+    fakes[raw_name] || raw_name;
+
+export const findOrCreateCard = (raw_name, client, cb) => {
+    const name = translateName(raw_name);
     const query = 'select card_id from cards where name = $1';
     client.query(query, [name], (err, result) => {
         console.log(name);

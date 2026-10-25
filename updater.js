@@ -39,6 +39,7 @@ async function doUpdate(resolve, start, end) {
             .catch((err) => console.log(`Error ${err}`));
         current = currentEnd + 1;
         console.log('~~~~~~~~~~ batch:', currentEnd);
+        await new Promise(r => setTimeout(r, 6000));
     }
     db.release();
     resolve();
