@@ -10,7 +10,6 @@ const numberStyle = {
     height: '25px',
     fontSize: '1.4rem',
     lineHeight: '1.6rem',
-    fontFamily: 'cursive',
     color: 'black',
 };
 
